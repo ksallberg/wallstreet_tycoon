@@ -20,7 +20,7 @@ for skill in skills:
    print skill.name
 
 pygame.init()
-screen = pygame.display.set_mode((640, 480))
+screen = pygame.display.set_mode((1200, 800))
 now = datetime.datetime.now()
 pygame.display.set_caption(str(now))
 clock = pygame.time.Clock()
