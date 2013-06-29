@@ -7,8 +7,6 @@ import time
 import os
 os.environ["DJANGO_SETTINGS_MODULE"] = 'djangosettings'
 
-
-
 from gamemodels.models import *
 
 newSkill       = Skill()
