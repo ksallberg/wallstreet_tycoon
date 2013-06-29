@@ -7,7 +7,19 @@ import time
 import os
 os.environ["DJANGO_SETTINGS_MODULE"] = 'djangosettings'
 
+
+
 from gamemodels.models import *
+
+newSkill       = Skill()
+newSkill.name  = 'johnny apa'
+newSkill.price = 34
+newSkill.save()
+
+skills = Skill.objects.all()
+
+for skill in skills:
+   print skill.name
 
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
