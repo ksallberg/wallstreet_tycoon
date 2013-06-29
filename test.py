@@ -1,6 +1,29 @@
-# first commit!
+import pygame
+from pygame import *
+import math
+import datetime
+import time
 
-def apa():
-   print 'hello!'
+import os
+os.environ["DJANGO_SETTINGS_MODULE"] = 'djangosettings'
 
-apa()
+from gamemodels.models import *
+
+pygame.init()
+screen = pygame.display.set_mode((640, 480))
+now = datetime.datetime.now()
+pygame.display.set_caption(str(now))
+clock = pygame.time.Clock()
+
+while True:
+      
+      for event in pygame.event.get():
+         if(event.type == KEYDOWN):
+            print 'down'
+         elif(event.type == KEYUP):
+            print 'up'
+      
+      screen.fill((0x99, 0x99, 0x99))
+      
+      pygame.display.flip()
+      clock.tick(13)
