@@ -1,4 +1,4 @@
-SECRET_KEY = '!$9wlci&p6bh-ks(5!nqkaf2i_wachji3o6p8ry$cegzl!h3@z'
+SECRET_KEY = '!'
 
 DATABASES = {
     'default': {
