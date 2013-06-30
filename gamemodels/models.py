@@ -6,7 +6,9 @@ from django.db import models
 # This is a table that for each stock, 
 # holds a history of prices
 class Stock(models.Model):
-   time  = models.DateTimeField('event_time')
+   # For now, time is measured just in integers
+   # didn't want to make sure it's daytime, not weekend etc
+   time  = models.IntegerField()
    price = models.IntegerField()
    
    def __unicode__(self):
