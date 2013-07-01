@@ -40,9 +40,10 @@ def getCurrentPortfolio(investor):
    # loop through to find what companies are owned
    for transaction in allTransactions:
       
-      if companiesOwned[transaction.company.name] == None:
-         companiesOwned[transaction.company.name] = 0
+      # if the dict key isn't set yet, set it to 0
+      companiesOwned.setdefault(transaction.company.name,0)
       
+      # otherwise increase or decrease
       if transaction.action == 'buy':
          companiesOwned[transaction.company.name] += transaction.amount
       elif transaction.action == 'sell':
@@ -50,6 +51,4 @@ def getCurrentPortfolio(investor):
       else:
          print 'ERROR: PORTFOLIOMANIPULATION.PY: GET CURRENT PORTFOLIO: WRONG TYPE'
    
-   print str(companiesOwned)
-   
-   return None
+   return companiesOwned

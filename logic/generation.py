@@ -33,13 +33,13 @@ def generateCompanyName(json,existingNames):
    # company names are unique?
    # Pretty ugly now... Just keeps finding new
    # names until they're all unique.
-   while (str(first + " " + second + " " + third),str(ticker)) in existingNames:
+   while ((str(first) + " " + str(second) + " " + str(third)),str(ticker)) in existingNames:
       first  = json["firstNames" ][random.randint(0,firstLen) ]
       second = json["secondNames"][random.randint(0,secondLen)]
       third  = json["thirdNames" ][random.randint(0,thirdLen) ]
       ticker = first[0] + second[0] + third[0]
    
-   return (str(first + " " + second + " " + third),str(ticker))
+   return ((str(first) + " " + str(second) + " " + str(third)),str(ticker))
 
 def generateInvestorName(json,existingNames):
    
@@ -49,11 +49,11 @@ def generateInvestorName(json,existingNames):
    first     = json["firstNames" ][random.randint(0,firstLen) ]
    family    = json["familyNames"][random.randint(0,secondLen)]
    
-   while(str(first + " " + family) in existingNames):
+   while ((str(first) + " " + str(family)) in existingNames):
       first  = json["firstNames" ][random.randint(0,firstLen) ]
       family = json["familyNames"][random.randint(0,secondLen)]
       
-   return str(first + " " + family)
+   return (str(first) + " " + str(family))
    
 # Populate a new savefile with some randomized
 # content so that a new round can begin

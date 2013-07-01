@@ -44,22 +44,24 @@ def handleHour():
       # don't do this for the player
       if investor.type == 'bot':
       
-      # iterate through all companies, and it's a 5% chance
-      # each investor will buy each stock
+         # iterate through all companies, and it's a 5% chance
+         # each investor will buy each stock
          for comp in comps:
             if applyChance(2):
                print 'buy stock'
                success = buyStock(investor,comp,5)
       
-      # iterate through the portfolio, and apply a 5% chance of
-      # selling each company
-      
+         # iterate through the portfolio, and apply a 20% chance of
+         # selling each company
+         portfolio = getCurrentPortfolio(investor)
+         print portfolio
+         
    
 def debugPrintCompany():
    
    comps = Company.objects.all()
 
-   # For each company, find the latest price and 
+   # For each company, find the latest price and
    # calculate a new one
    for comp in comps:
       
