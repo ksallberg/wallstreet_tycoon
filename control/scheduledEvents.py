@@ -28,3 +28,21 @@ def handleHour():
       comp.save()
       
    print 'new prices calculated'
+   
+def debugPrintCompany():
+   
+   comps = Company.objects.all()
+
+   # For each company, find the latest price and 
+   # calculate a new one
+   for comp in comps:
+      
+      print 'company: ' + comp.name
+      
+      priceHist = comp.priceHistory.all()
+      
+      for stock in priceHist:
+         
+         print '  :::' + str(stock.price)
+      
+   print 'new prices calculated'

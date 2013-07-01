@@ -13,7 +13,7 @@ from subprocess import call
 from utils.loading import Loader
 from logic.generation import *
 
-from control.scheduledEvents import handleHour
+from control.scheduledEvents import handleHour, debugPrintCompany
 
 if connection.introspection.table_names() == []:
    print 'save file DOES NOT exist'
@@ -42,7 +42,7 @@ clock = pygame.time.Clock()
 while True:
       for event in pygame.event.get():
          if(event.type == KEYDOWN):
-            print 'down'
+            debugPrintCompany()
          elif(event.type == KEYUP):
             print 'up'
       
