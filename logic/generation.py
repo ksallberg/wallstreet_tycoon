@@ -1,5 +1,5 @@
 import random
-from gamemodels.models import Stock, Company
+from gamemodels.models import *
 
 # a company name generator
 # based on the company_names.json file
@@ -40,13 +40,27 @@ def generateCompanyName(json,existingNames):
       ticker = first[0] + second[0] + third[0]
    
    return (str(first + " " + second + " " + third),str(ticker))
+
+def generateInvestorName(json,existingNames):
+   
+   firstLen  = len(json["firstNames"] ) - 1
+   secondLen = len(json["familyNames"]) - 1
+   
+   first     = json["firstNames" ][random.randint(0,firstLen) ]
+   family    = json["familyNames"][random.randint(0,secondLen)]
+   
+   while(str(first + " " + family) in existingNames):
+      first  = json["firstNames" ][random.randint(0,firstLen) ]
+      family = json["familyNames"][random.randint(0,secondLen)]
+      
+   return str(first + " " + family)
    
 # Populate a new savefile with some randomized
 # content so that a new round can begin
-def generateNewRound(names):
+def generateNewRound(companyNames,investorNames):
    
-   # Create 100 random companies
-   for i in range(0,len(names)-1):
+   # Create random companies
+   for i in range(0,len(companyNames)-1):
       
       st       = Stock()
       st.time  = 0
@@ -54,10 +68,24 @@ def generateNewRound(names):
       st.save()
       
       newComp           = Company()
-      newComp.name      = names[i][0]
-      newComp.ticker    = names[i][1]
+      newComp.name      = companyNames[i][0]
+      newComp.ticker    = companyNames[i][1]
       newComp.cash      = random.randint(500000,100000000) #500,000 to 100 million
       newComp.shares    = 100000
       newComp.save()
       
       newComp.priceHistory.add(st)
+      
+   # Create random investors
+   for i in range(0,len(investorNames)-1):
+      
+      port = Portfolio()
+      port.name = investorNames[i] + '_portfolio'
+      # port.companies is empty
+      port.save()
+      
+      inv = Investor()
+      inv.name = investorNames[i]
+      inv.cash = 50000
+      inv.portfolio = port
+      inv.save()

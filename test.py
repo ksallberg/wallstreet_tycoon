@@ -13,7 +13,7 @@ from subprocess import call
 from utils.loading import Loader
 from logic.generation import *
 
-from control.scheduledEvents import handleHour, debugPrintCompany
+from control.scheduledEvents import handleHour, debugPrintCompany, debugPrintInvestors
 
 if connection.introspection.table_names() == []:
    print 'save file DOES NOT exist'
@@ -21,14 +21,21 @@ if connection.introspection.table_names() == []:
    call(["python", "manage.py", "syncdb"])
    
    # load names to create
-   compNamesLoader = Loader()
-   nameSettings    = compNamesLoader.loadJSON('json/company_names.json')
-   companyNames    = []
-   for i in range(1,100): #create 100 companies
-      newComp = generateCompanyName(nameSettings,companyNames)
-      companyNames.append(newComp)
+   loader           = Loader()
+   compNameSettings = loader.loadJSON('json/company_names.json')
+   inveNameSettings = loader.loadJSON('json/investor_names.json')
+   companyNames     = []
+   investorNames    = []
    
-   generateNewRound(companyNames)
+   for i in range(1,50): #create 50 companies
+      newCompany = generateCompanyName(compNameSettings,companyNames)
+      companyNames.append(newCompany)
+   
+   for i in range(1,20): #create 20 investors
+      newInvestor = generateInvestorName(inveNameSettings,investorNames)
+      investorNames.append(newInvestor)
+   
+   generateNewRound(companyNames,investorNames)
 
 from utils.timer import RepeatedTimer
 rt = RepeatedTimer(5,handleHour) # 10 game seconds is one hour
@@ -44,7 +51,7 @@ while True:
          if(event.type == KEYDOWN):
             debugPrintCompany()
          elif(event.type == KEYUP):
-            print 'up'
+            debugPrintInvestors()
       
       screen.fill((0x99, 0x99, 0x99))
       
