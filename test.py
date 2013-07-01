@@ -49,9 +49,11 @@ clock = pygame.time.Clock()
 while True:
       for event in pygame.event.get():
          if(event.type == KEYDOWN):
-            debugPrintCompany()
+            print 'down'
+            #debugPrintCompany()
          elif(event.type == KEYUP):
-            debugPrintInvestors()
+            print 'up'
+            #debugPrintInvestors()
       
       screen.fill((0x99, 0x99, 0x99))
       

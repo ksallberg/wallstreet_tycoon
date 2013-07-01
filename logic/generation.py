@@ -79,13 +79,15 @@ def generateNewRound(companyNames,investorNames):
    # Create random investors
    for i in range(0,len(investorNames)-1):
       
-      port = Portfolio()
-      port.name = investorNames[i] + '_portfolio'
-      # port.companies is empty
-      port.save()
-      
       inv = Investor()
       inv.name = investorNames[i]
       inv.cash = 50000
-      inv.portfolio = port
+      inv.type = 'bot'
       inv.save()
+      
+   # Create the player
+   player = Investor()
+   player.name = 'The Player'
+   player.cash = 50000
+   player.type = 'player'
+   player.save()

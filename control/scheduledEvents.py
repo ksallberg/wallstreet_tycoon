@@ -1,6 +1,8 @@
-from logic.priceManipulation import calcNewPrice
-from gamemodels.models import Company, Stock, Investor
-from django.db.models import Max
+from logic.priceManipulation     import calcNewPrice
+from gamemodels.models           import Company, Stock, Investor
+from django.db.models            import Max
+from logic.chance                import applyChance
+from logic.portfolioManipulation import buyStock, getCurrentPortfolio, sellStock
 
 # Every hour of the stock, this function
 # handles calculating new prices for each of
@@ -37,11 +39,21 @@ def handleHour():
    
    # For each investor, except the player, 
    # make some random buys and sells
-   
-   #TODO keep working here
-   #for investor in investors:
+   for investor in investors:
       
-      #print 'investor!'
+      # don't do this for the player
+      if investor.type == 'bot':
+      
+      # iterate through all companies, and it's a 5% chance
+      # each investor will buy each stock
+         for comp in comps:
+            if applyChance(2):
+               print 'buy stock'
+               success = buyStock(investor,comp,5)
+      
+      # iterate through the portfolio, and apply a 5% chance of
+      # selling each company
+      
    
 def debugPrintCompany():
    

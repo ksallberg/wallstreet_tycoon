@@ -25,21 +25,28 @@ class Company(models.Model):
 
    def __unicode__(self):
       return self.name
-
-# A collection of companies
-class Portfolio(models.Model):
-   name      = models.CharField(max_length=100)
-   companies = models.ManyToManyField(Company)
-   
-   def __unicode__(self):
-      return self.name
       
 # The player, and opponents, are modeled as 
-# investors with some cash, a name and a portfolio
+# investors with some cash and a name
+# 
+# The portfolio is stored as
+# a number of TradingRegister rows
 class Investor(models.Model):
    name      = models.CharField(max_length=100)
-   portfolio = models.ForeignKey(Portfolio)
    cash      = models.IntegerField()
+   type      = models.CharField(max_length=6) #should be 'bot' or 'player'
    
    def __unicode__(self):
       return self.name
+
+# Keeps track of all stocks that are sold
+# and bought. To be able to see what
+# players did during the game but also
+# to be able to calculate profit/loss when
+# selling stocks
+class TradingRegister(models.Model):
+   investor  = models.ForeignKey(Investor)
+   action    = models.CharField(max_length=4) #should be 'buy' or 'sell'
+   company   = models.ForeignKey(Company)
+   stock     = models.ForeignKey(Stock)
+   amount    = models.IntegerField()
