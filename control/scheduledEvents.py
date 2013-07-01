@@ -44,18 +44,18 @@ def handleHour():
       # don't do this for the player
       if investor.type == 'bot':
       
-         # iterate through all companies, and it's a 5% chance
+         # iterate through all companies, and it's a 20% chance
          # each investor will buy each stock
          for comp in comps:
             if applyChance(20):
                print 'buy stock'
                success = buyStock(investor,comp,5)
       
-         # iterate through the portfolio, and apply a 20% chance of
+         # iterate through the portfolio, and apply a 50% chance of
          # selling each company
          portfolio = getCurrentPortfolio(investor)
          for entry in portfolio:
-            if applyChance(20):
+            if applyChance(50):
                
                print 'sell stock'
                
@@ -65,6 +65,9 @@ def handleHour():
                # then delegate the object modification
                # to sellStock
                sellStock(investor,comp,portfolio[entry])
+               
+         # finally, just to debug, print the person and his/her current cash:
+         print investor.name + ", cash: " + str(investor.cash)
    
 def debugPrintCompany():
    

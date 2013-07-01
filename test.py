@@ -31,7 +31,7 @@ if connection.introspection.table_names() == []:
       newCompany = generateCompanyName(compNameSettings,companyNames)
       companyNames.append(newCompany)
    
-   for i in range(1,3): #create 3 investors
+   for i in range(1,10): #create 10 investors
       newInvestor = generateInvestorName(inveNameSettings,investorNames)
       investorNames.append(newInvestor)
    
