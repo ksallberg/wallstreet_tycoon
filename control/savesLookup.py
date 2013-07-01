@@ -24,7 +24,7 @@ def createSettingsFile(dbName):
 def findExistingRounds():
    return [fi for fi in listdir('saves') if (
                                              isfile(join('saves',fi)) and
-                                             fi.split('.')[1] == 'sqlite'
+                                             fi.split('.')[1] == 'save'
                                             )
           ]
 
@@ -32,5 +32,5 @@ def findExistingRounds():
 # This is run straigh here in the code, because this 
 # needs to be done before any django models are imported.
 if findExistingRounds() == []:
-   currTime = 'saves/'+strftime("%Y-%m-%d-%H-%M-%S", gmtime())+'.sqlite'
+   currTime = 'saves/'+strftime("%Y-%m-%d-%H-%M-%S", gmtime())+'.save'
    createSettingsFile(currTime)

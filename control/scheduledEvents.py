@@ -47,15 +47,24 @@ def handleHour():
          # iterate through all companies, and it's a 5% chance
          # each investor will buy each stock
          for comp in comps:
-            if applyChance(2):
+            if applyChance(20):
                print 'buy stock'
                success = buyStock(investor,comp,5)
       
          # iterate through the portfolio, and apply a 20% chance of
          # selling each company
          portfolio = getCurrentPortfolio(investor)
-         print portfolio
-         
+         for entry in portfolio:
+            if applyChance(20):
+               
+               print 'sell stock'
+               
+               # get the corresponding company to sell
+               comp = Company.objects.get(name=entry)
+               
+               # then delegate the object modification
+               # to sellStock
+               sellStock(investor,comp,portfolio[entry])
    
 def debugPrintCompany():
    

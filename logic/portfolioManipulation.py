@@ -28,7 +28,23 @@ def buyStock(investor,company,amount):
       return 'transaction complete'
 
 def sellStock(investor,company,amount):
-   return None
+   
+   # find the last time that was entered
+   lastTime = company.priceHistory.all().aggregate(Max('time'))
+   
+   # find a reference to that stock entry
+   stockHandle = company.priceHistory.get(time=lastTime['time__max'])
+   
+   entry = TradingRegister()
+   entry.investor = investor
+   entry.action   = 'sell'
+   entry.company  = company
+   entry.stock    = stockHandle
+   entry.amount   = amount
+   entry.save()
+   
+   investor.cash += stockHandle.price * amount
+   investor.save()
    
 def getCurrentPortfolio(investor):
    
