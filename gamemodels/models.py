@@ -19,9 +19,9 @@ class Stock(models.Model):
 class Company(models.Model):
    name         = models.CharField(max_length=100)
    priceHistory = models.ManyToManyField(Stock)
-   lastPrice    = models.ForeignKey(Stock,related_name='last_price')
    cash         = models.IntegerField()
    ticker       = models.CharField(max_length=3)
+   shares       = models.IntegerField() #how many shares are outstanding
 
    def __unicode__(self):
       return self.name

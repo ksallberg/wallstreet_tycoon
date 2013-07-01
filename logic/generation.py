@@ -1,4 +1,5 @@
 import random
+from gamemodels.models import Stock, Company
 
 # a company name generator
 # based on the company_names.json file
@@ -39,3 +40,24 @@ def generateCompanyName(json,existingNames):
       ticker = first[0] + second[0] + third[0]
    
    return (str(first + " " + second + " " + third),str(ticker))
+   
+# Populate a new savefile with some randomized
+# content so that a new round can begin
+def generateNewRound(names):
+   
+   # Create 100 random companies
+   for i in range(0,len(names)-1):
+      
+      st       = Stock()
+      st.time  = 0
+      st.price = random.randint(3,300) # the initial stock price
+      st.save()
+      
+      newComp           = Company()
+      newComp.name      = names[i][0]
+      newComp.ticker    = names[i][1]
+      newComp.cash      = random.randint(500000,100000000) #500,000 to 100 million
+      newComp.shares    = 100000
+      newComp.save()
+      
+      newComp.priceHistory.add(st)
