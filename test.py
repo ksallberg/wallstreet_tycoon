@@ -31,14 +31,14 @@ if connection.introspection.table_names() == []:
       newCompany = generateCompanyName(compNameSettings,companyNames)
       companyNames.append(newCompany)
    
-   for i in range(1,10): #create 10 investors
+   for i in range(1,16): #create 16 investors
       newInvestor = generateInvestorName(inveNameSettings,investorNames)
       investorNames.append(newInvestor)
    
    generateNewRound(companyNames,investorNames)
 
 from utils.timer import RepeatedTimer
-rt = RepeatedTimer(5,handleHour) # 10 game seconds is one hour
+rt = RepeatedTimer(10,handleHour) # 10 game seconds is one hour
 
 pygame.init()
 screen = pygame.display.set_mode((1200, 800))

@@ -14,6 +14,7 @@ def buyStock(investor,company,amount):
       return 'transaction failed'
    else:
       # Create a new TradingRegister entry, of buy type
+      # this is just to log what has happened
       entry = TradingRegister()
       entry.investor = investor
       entry.action   = 'buy'
@@ -21,6 +22,22 @@ def buyStock(investor,company,amount):
       entry.stock    = stockHandle
       entry.amount   = amount
       entry.save()
+   
+      # Create a portfolio entry, this will be used to
+      # calculate profits when selling
+      (obj,created) = Portfolio.objects.get_or_create(investor=investor,company=company,
+                                                      defaults={'amount':amount})
+      
+      # if a new registry was created,
+      # the amount is already set because of defaults
+      # above
+      if created:
+         obj.save()
+      # if not, then just increment the amount and
+      # save
+      else:
+         obj.amount += amount
+         obj.save()
    
       # this investor's cash is used to pay the transaction
       investor.cash -= stockHandle.price * amount
@@ -43,28 +60,43 @@ def sellStock(investor,company,amount):
    entry.amount   = amount
    entry.save()
    
+   # delete from the portfolio entry to clear
+   # it from the list of owned stocks
+   portEntry = Portfolio.objects.get(investor=investor,company=company)
+   
+   if(portEntry.amount - amount < 0):
+      print 'PORTFOLIOMANIPULATION: SELL STOCK: ERROR: SELLING MORE THAN OWNED!'
+   else:
+      portEntry.amount = portEntry.amount - amount
+      portEntry.save()
+   
+   # to speed up getCurrentPortfolio
+   portEntry.amount == 0
+   portEntry.delete()
+   
    investor.cash += stockHandle.price * amount
    investor.save()
    
 def getCurrentPortfolio(investor):
    
-   # Get all transactions this player has created
-   allTransactions = TradingRegister.objects.filter(investor=investor)
+   # get all stocks this investor currently owns
+   portfolio = Portfolio.objects.filter(investor=investor)
    
-   companiesOwned = {}
+   return map((lambda obj: (obj.company.name,obj.amount)),portfolio)
    
-   # loop through to find what companies are owned
-   for transaction in allTransactions:
-      
-      # if the dict key isn't set yet, set it to 0
-      companiesOwned.setdefault(transaction.company.name,0)
-      
-      # otherwise increase or decrease
-      if transaction.action == 'buy':
-         companiesOwned[transaction.company.name] += transaction.amount
-      elif transaction.action == 'sell':
-         companiesOwned[transaction.company.name] -= transaction.amount
-      else:
-         print 'ERROR: PORTFOLIOMANIPULATION.PY: GET CURRENT PORTFOLIO: WRONG TYPE'
+def calcCurrentPortfolioWorth(investor):
    
-   return companiesOwned
+   # get all stocks this investor currently owns
+   portfolio = Portfolio.objects.filter(investor=investor)
+   totSum = 0
+   
+   for portfolioEntry in portfolio:
+      # find the last time that was entered
+      lastTime = portfolioEntry.company.priceHistory.all().aggregate(Max('time'))
+   
+      # find a reference to that stock entry
+      stockHandle = portfolioEntry.company.priceHistory.get(time=lastTime['time__max'])
+   
+      totSum += stockHandle.price * portfolioEntry.amount
+   
+   return totSum

@@ -39,11 +39,21 @@ class Investor(models.Model):
    def __unicode__(self):
       return self.name
 
+# Instead of an investor owning a portfolio,
+# I let the portfolio represent a table where
+# Companies are connected to investors, AND
+# where the amount of shares owned are stated
+class Portfolio(models.Model):
+   investor  = models.ForeignKey(Investor)
+   amount    = models.IntegerField()
+   company   = models.ForeignKey(Company)
+
 # Keeps track of all stocks that are sold
 # and bought. To be able to see what
-# players did during the game but also
-# to be able to calculate profit/loss when
-# selling stocks
+# players did during the game 
+#
+# This is not read from in the game, just
+# for storage and for fun
 class TradingRegister(models.Model):
    investor  = models.ForeignKey(Investor)
    action    = models.CharField(max_length=4) #should be 'buy' or 'sell'

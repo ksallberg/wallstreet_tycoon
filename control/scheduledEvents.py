@@ -2,7 +2,7 @@ from logic.priceManipulation     import calcNewPrice
 from gamemodels.models           import Company, Stock, Investor
 from django.db.models            import Max
 from logic.chance                import applyChance
-from logic.portfolioManipulation import buyStock, getCurrentPortfolio, sellStock
+from logic.portfolioManipulation import *
 
 # Every hour of the stock, this function
 # handles calculating new prices for each of
@@ -47,27 +47,25 @@ def handleHour():
          # iterate through all companies, and it's a 20% chance
          # each investor will buy each stock
          for comp in comps:
-            if applyChance(20):
-               print 'buy stock'
-               success = buyStock(investor,comp,5)
+            if applyChance(2):
+               success = buyStock(investor,comp,100)
       
          # iterate through the portfolio, and apply a 50% chance of
          # selling each company
          portfolio = getCurrentPortfolio(investor)
          for entry in portfolio:
-            if applyChance(50):
-               
-               print 'sell stock'
+            if applyChance(20):
                
                # get the corresponding company to sell
-               comp = Company.objects.get(name=entry)
+               comp = Company.objects.get(name=entry[0])
                
                # then delegate the object modification
                # to sellStock
-               sellStock(investor,comp,portfolio[entry])
+               sellStock(investor,comp,entry[1])
                
-         # finally, just to debug, print the person and his/her current cash:
-         print investor.name + ", cash: " + str(investor.cash)
+      # finally, just to debug, print the person and his/her current cash:
+      print (investor.name + ", \t\tcash: " + str(investor.cash) + ", \t\tin stock: " + str(calcCurrentPortfolioWorth(investor))
+                           + ", \t\ttotal: " + str(investor.cash+calcCurrentPortfolioWorth(investor)))
    
 def debugPrintCompany():
    
