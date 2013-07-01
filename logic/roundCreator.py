@@ -1,5 +1,6 @@
 from os import listdir
 from os.path import isfile, join
+import random
 
 # Look in the saves folder, and return
 # all wallstreet game save files.
@@ -14,7 +15,7 @@ def findExistingRounds():
 # content so that a new round can begin
 def createNewRound(names):
    
-   from gamemodels.models import *
+   from gamemodels.models import Stock
    
    # Create 100 random companies
    for i in range(0,len(names)-1):
@@ -27,7 +28,7 @@ def createNewRound(names):
       newComp.name      = names[i][0]
       newComp.ticker    = names[i][1]
       newComp.lastPrice = st
-      newComp.cash      = 1000
+      newComp.cash      = random.randint(500000,100000000) #500,000 to 100 million
       newComp.save()
       
       newComp.priceHistory.add(st)
@@ -35,7 +36,7 @@ def createNewRound(names):
 # It does not seem possible to change the name variable of Django's ORM
 # settings file run time, so it has to be changed before Django looks at it
 def createSettingsFile(dbName):
-   print 'CREATE SETTINGS FILE!!!'
+   print 'Creating settings file'
    
    f = open('djangosettings.py', 'w')
    f.write("SECRET_KEY = '!'\n")

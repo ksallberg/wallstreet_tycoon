@@ -10,8 +10,8 @@ import os
 os.environ["DJANGO_SETTINGS_MODULE"] = 'djangosettings'
 
 from utils.loading import Loader
-from utils.roundCreator import *
-from utils.generation import generateCompanyName
+from logics.roundCreator import *
+from logics.generation import generateCompanyName
 
 compNamesLoader = Loader()
 nameSettings    = compNamesLoader.loadJSON('json/company_names.json')
@@ -19,9 +19,6 @@ companyNames    = []
 for i in range(1,100):
    newComp = generateCompanyName(nameSettings,companyNames)
    companyNames.append(newComp)
-
-#print companyNames
-#raise SystemExit
 
 if findExistingRounds() == []:
    print 'save file DOES NOT exist'
@@ -34,12 +31,11 @@ else:
    fileName = 'saves/'+findExistingRounds()[0]
    createSettingsFile(fileName)
 
-
 from gamemodels.models import *
 comps = Company.objects.all()
 
 for comp in comps:
-   print comp.name
+   print comp.name + ", " + comp.ticker
 
 pygame.init()
 screen = pygame.display.set_mode((1200, 800))
