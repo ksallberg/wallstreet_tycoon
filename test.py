@@ -9,7 +9,19 @@ from subprocess import call
 import os
 os.environ["DJANGO_SETTINGS_MODULE"] = 'djangosettings'
 
+from utils.loading import Loader
 from utils.roundCreator import *
+from utils.generation import generateCompanyName
+
+compNamesLoader = Loader()
+nameSettings    = compNamesLoader.loadJSON('json/company_names.json')
+companyNames    = []
+for i in range(1,100):
+   newComp = generateCompanyName(nameSettings,companyNames)
+   companyNames.append(newComp)
+
+print companyNames
+raise SystemExit
 
 if findExistingRounds() == []:
    print 'save file DOES NOT exist'

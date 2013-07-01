@@ -21,6 +21,7 @@ class Company(models.Model):
    priceHistory = models.ManyToManyField(Stock)
    lastPrice    = models.ForeignKey(Stock,related_name='last_price')
    cash         = models.IntegerField()
+   ticker       = models.CharField(max_length=3)
 
    def __unicode__(self):
       return self.name
