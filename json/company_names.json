@@ -13,7 +13,16 @@
                   "European",
                   "Norway",
                   "Calcutta",
-                  "Modern"
+                  "Modern",
+                  "Mechanical",
+                  "Superior",
+                  "Chicago",
+                  "Detroit",
+                  "Miami",
+                  "Berlin",
+                  "London",
+                  "British",
+                  "Microwave"
                   ]
  ,
  "secondNames" : ["Media",
@@ -37,7 +46,19 @@
                   "Supercharger",
                   "Intensity",
                   "City",
-                  "Hotel"
+                  "Hotel",
+                  "Paper",
+                  "Woods",
+                  "Goods",
+                  "Mail",
+                  "Broadcasting",
+                  "Hill",
+                  "Rural",
+                  "Central",
+                  "Communications",
+                  "Utensils",
+                  "Systems",
+                  "Engineering"
                   ]
  ,
  "thirdNames"  : ["Corp",

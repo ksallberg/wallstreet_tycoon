@@ -12,22 +12,22 @@ def findExistingRounds():
 
 # Populate a new savefile with some randomized
 # content so that a new round can begin
-def createNewRound():
+def createNewRound(names):
    
    from gamemodels.models import *
    
    # Create 100 random companies
-   for i in range(0,10):
+   for i in range(0,len(names)-1):
       st       = Stock()
       st.time  = 0
       st.price = 0
       st.save()
       
-      newComp = Company()
-      newComp.name = 'testcompany'
-#      newComp.priceHistory = []
+      newComp           = Company()
+      newComp.name      = names[i][0]
+      newComp.ticker    = names[i][1]
       newComp.lastPrice = st
-      newComp.cash = 1000
+      newComp.cash      = 1000
       newComp.save()
       
       newComp.priceHistory.add(st)

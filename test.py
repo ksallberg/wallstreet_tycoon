@@ -20,15 +20,15 @@ for i in range(1,100):
    newComp = generateCompanyName(nameSettings,companyNames)
    companyNames.append(newComp)
 
-print companyNames
-raise SystemExit
+#print companyNames
+#raise SystemExit
 
 if findExistingRounds() == []:
    print 'save file DOES NOT exist'
    currTime = 'saves/'+strftime("%Y-%m-%d-%H-%M-%S", gmtime())+'.sqlite'
    createSettingsFile(currTime)
    call(["python", "manage.py", "syncdb"])
-   createNewRound()
+   createNewRound(companyNames)
 else:
    print 'save file exists'
    fileName = 'saves/'+findExistingRounds()[0]
