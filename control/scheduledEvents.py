@@ -1,5 +1,5 @@
 from logic.priceManipulation import calcNewPrice
-from gamemodels.models import Company
+from gamemodels.models import Company, Stock
 from django.db.models import Max
 
 # Every hour of the stock, this function
@@ -9,11 +9,22 @@ def handleHour():
    
    comps = Company.objects.all()
 
-   print str(comps)
-
    # For each company, find the latest price and 
    # calculate a new one
    for comp in comps:
       
-      lastPrice = comp.priceHistory.all().aggregate(Max('price'))
-      print "price: " + str(lastPrice)
+      # find the last time that was entered
+      lastTime = comp.priceHistory.all().aggregate(Max('time'))
+      
+      # find the price associated with that time
+      lastEntry = comp.priceHistory.get(time=lastTime['time__max'])
+      
+      newEntry = Stock()
+      newEntry.time = lastEntry.time + 1
+      newEntry.price = calcNewPrice(lastEntry.price)
+      newEntry.save()
+      
+      comp.priceHistory.add(newEntry)
+      comp.save()
+      
+   print 'new prices calculated'
