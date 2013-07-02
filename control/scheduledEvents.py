@@ -3,6 +3,36 @@ from gamemodels.models           import Company, Stock, Investor
 from django.db.models            import Max
 from logic.chance                import applyChance
 from logic.portfolioManipulation import *
+from django.db                   import connection
+from utils.timer                 import RepeatedTimer
+from subprocess                  import call
+from utils.loading               import Loader
+from logic.generation            import *
+# start up the game
+def modelInit():
+   if connection.introspection.table_names() == []:
+      print 'save file DOES NOT exist'
+      
+      call(["python", "manage.py", "syncdb"])
+      
+      # load names to create
+      loader           = Loader()
+      compNameSettings = loader.loadJSON('json/company_names.json')
+      inveNameSettings = loader.loadJSON('json/investor_names.json')
+      companyNames     = []
+      investorNames    = []
+      
+      for i in range(1,100): #create 100 companies
+         newCompany = generateCompanyName(compNameSettings,companyNames)
+         companyNames.append(newCompany)
+      
+      for i in range(1,20): #create 20 investors
+         newInvestor = generateInvestorName(inveNameSettings,investorNames)
+         investorNames.append(newInvestor)
+   
+      generateNewRound(companyNames,investorNames)
+      
+   rt = RepeatedTimer(10,handleHour) # 10 game seconds is one hour
 
 # Every hour of the stock, this function
 # handles calculating new prices for each of
