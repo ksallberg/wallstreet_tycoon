@@ -14,8 +14,6 @@ from control.scheduledEvents import *
 # the real time price changes and bot purchases
 #modelInit()
 
-
-
 pygame.init()
 screen = pygame.display.set_mode((1184, 800)) # (37*32,25*32)
 now = datetime.datetime.now()
@@ -51,19 +49,6 @@ def loadImage(sheet, indexX, indexY):
     image.set_colorkey(-1, RLEACCEL)
     return image
 
-def tileIdentifierToPos(id):
-   {
-      'rol' : (3,42), #rock left
-      'ror' : (4,42), #rock right
-      'rwl' : (3,44), #rock water left
-      'rwr' : (4,44), #rock water right
-      'flo' : 2,      #floor
-      'sf1' : (3,43), #sea front continuing1
-      'sf2' : (3,43), #sea front continuing2
-      'sfl' : 2,      #sea front left
-      'sfr' : 3,      #sea front right
-   }[id]
-
 def main():
    while True:
       for event in pygame.event.get():
@@ -86,6 +71,14 @@ def main():
             continue
          else:
             renderer.render_layer(screen, sprite_layer)
+      
+      (mouseX,mouseY) = pygame.mouse.get_pos()
+      (aa,bb) = (mouseX%32,mouseY%32)
+      
+      s = pygame.Surface((32,32))
+      s.set_alpha(80)
+      s.fill((0,255,255))
+      screen.blit(s, (mouseX-aa,mouseY-bb))
       
       pygame.display.flip()
       clock.tick(13)
