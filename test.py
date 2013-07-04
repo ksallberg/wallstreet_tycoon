@@ -53,13 +53,13 @@ def main():
    while True:
       for event in pygame.event.get():
          if(event.type == pygame.KEYDOWN):
-            if   event.key == pygame.K_UP:
+            if   event.key == pygame.K_UP and camera[1] > 0:
                camera[1] -= townmap.tileheight
-            elif event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_DOWN and camera[1] < 2400:
                camera[1] += townmap.tileheight
-            elif event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_RIGHT and camera[0] < 2016:
                camera[0] += townmap.tilewidth
-            elif event.key == pygame.K_LEFT:
+            elif event.key == pygame.K_LEFT  and camera[0] > 0:
                camera[0] -= townmap.tilewidth
       
       renderer.set_camera_position(camera[0],camera[1],'topleft')
