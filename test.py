@@ -8,6 +8,7 @@ import math
 import datetime
 import time
 import tiledtmxloader
+from utils import AStar
 
 from pygame import *
 from control.scheduledEvents import *
@@ -27,7 +28,7 @@ characters = []
 char = Character()
 char.x = 100
 char.y = 100
-char.setType(char.type4)
+char.setType(char.type1)
 characters.append(char)
 
 char2 = Character()
@@ -83,19 +84,64 @@ townmap = tiledtmxloader.tmxreader.TileMapParser().parse_decode('resources/town.
 resources = tiledtmxloader.helperspygame.ResourceLoaderPygame()
 resources.load(townmap)
 
-townmap.orientation = 'orthogonal'
-
 renderer = tiledtmxloader.helperspygame.RendererPygame()
 
 camera = [0,0]
 
-renderer.set_camera_position_and_size(camera[0],camera[1],1184,800,'topleft')
+widthInTiles = 37
+heightInTiles = 25
+
+renderer.set_camera_position_and_size(camera[0],camera[1],widthInTiles*32,heightInTiles*32,'topleft')
 
 sprite_layers = tiledtmxloader.helperspygame.get_layers_from_map(resources)
+
+aStarMap = []
+blockingLayer = None
+startpoint = (6,14)
+endpoint   = (31,14)
+pathlines = []
+
+# testing blocking layers
+for layer in sprite_layers:
+   if layer.layer_idx == 2:
+      blockingLayer = layer
+
+for i in range(0,heightInTiles):
+   for j in range(0,widthInTiles):
+      
+      if i == startpoint[0] and j == startpoint[1]:
+         aStarMap.append(5)
+      elif i == endpoint[0] and j == endpoint[1]:
+         aStarMap.append(6)
+      else:
+         
+         if blockingLayer.content2D[i][j] == None:
+            aStarMap.append(1)
+         else:
+            aStarMap.append(-1)
 
 """
 map!
 """
+
+def findPath():
+   astar = AStar.AStar(AStar.SQ_MapHandler(aStarMap,widthInTiles,heightInTiles))
+   start = AStar.SQ_Location(startpoint[0],startpoint[1])
+   end   = AStar.SQ_Location(endpoint[0],endpoint[1])
+   
+   p = astar.findPath(start,end)
+
+   if not p:
+      print 'No path found!'
+   else:
+      #print 'Path found!' + str(len(p.nodes))
+      pathlines = []
+      pathlines.append((start.x*32+16,start.y*32+16))
+      for n in p.nodes:
+          pathlines.append((n.location.x*32+16,n.location.y*32+16))
+      pathlines.append((end.x*32+16,end.y*32+16))
+
+      return pathlines
 
 def loadImage(sheet, indexX, indexY):
     rect = Rect((indexX,indexY, 32, 48))
@@ -107,7 +153,9 @@ def loadImage(sheet, indexX, indexY):
 def main():
    while True:
       for event in pygame.event.get():
-         if event.type == pygame.KEYDOWN:
+         if   event.type == MOUSEBUTTONDOWN:
+            print 'mouse down!'
+         elif event.type == pygame.KEYDOWN:
             characters[0].setState(char.STATE_WALKING)
             if   event.key == pygame.K_UP and camera[1] > 0:
                camera[1] -= townmap.tileheight
@@ -132,7 +180,8 @@ def main():
          if sprite_layer.is_object_group:
             continue
          else:
-            renderer.render_layer(screen, sprite_layer)
+            if sprite_layer.layer_idx != 2:
+               renderer.render_layer(screen, sprite_layer)
       
       (mouseX,mouseY) = pygame.mouse.get_pos()
       (aa,bb) = (mouseX%32,mouseY%32)
@@ -149,7 +198,12 @@ def main():
                          chpos[0],
                          chpos[1]
                         )
-         screen.blit(img, (ch.x, ch.y))
+         screen.blit(img, (ch.x-5, ch.y+5))
+      
+      pathlines = findPath()
+      
+      if pathlines and len(pathlines):
+         pygame.draw.lines(screen, (255,255,255,255), 0, pathlines)
       
       pygame.display.flip()
       clock.tick(60)
