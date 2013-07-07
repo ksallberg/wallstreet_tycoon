@@ -17,7 +17,7 @@ from control.scheduledEvents import *
 # the real time price changes and bot purchases
 #modelInit()
 
-widthInTiles  = 30#37
+widthInTiles  = 29#37
 heightInTiles = 20
 
 totalWidthInTiles  = 100
@@ -32,9 +32,9 @@ clock = pygame.time.Clock()
 characters = []
 
 char = Character()
-char.x = 100
-char.y = 100
-char.setType(char.type5)
+char.x = 1*32
+char.y = 20*32
+char.setType(char.type8)
 characters.append(char)
 
 char2 = Character()
@@ -110,6 +110,8 @@ endpoint   = (14,19)
 global pathlines
 pathlines = []
 
+
+
 # testing blocking layers
 for layer in sprite_layers:
    if layer.layer_idx == 2:
@@ -169,17 +171,15 @@ def main():
    while True:
       for event in pygame.event.get():
          if   event.type == MOUSEBUTTONDOWN:
-            print 'mouse down!'
-            global endpoint
-            global startpoint
-            startpoint = ((char.x)/32,(char.y)/32)
-            endpoint   = (pygame.mouse.get_pos()[0]/32+camera[0]/32,pygame.mouse.get_pos()[1] / 32+camera[1]/32)#(round(camera[0]/32+pygame.mouse.get_pos()[0] / 32),round(camera[1]/32+pygame.mouse.get_pos()[1] / 32))
-            #print "new endpoint" + str(endpoint)
-            global pathlines
-            pathlines = findPath()
-            char.setMovingPositions(copy.deepcopy(pathlines))
-            
-            print startpoint
+            if blockingLayer.content2D[(mouseY-bb+camera[1])/32][(mouseX-aa+camera[0])/32] == None:
+               global endpoint
+               global startpoint
+               startpoint = ((char.x)/32,(char.y)/32)
+               endpoint   = (pygame.mouse.get_pos()[0]/32+camera[0]/32,pygame.mouse.get_pos()[1] / 32+camera[1]/32)#(round(camera[0]/32+pygame.mouse.get_pos()[0] / 32),round(camera[1]/32+pygame.mouse.get_pos()[1] / 32))
+               #print "new endpoint" + str(endpoint)
+               global pathlines
+               pathlines = findPath()
+               char.setMovingPositions(copy.deepcopy(pathlines))
             
             #print camera
             
@@ -225,9 +225,18 @@ def main():
       
       (aa,bb) = (mouseX%32,mouseY%32)
       
+      mouseColor = None
+      
+      #if blockingLayer.content2D[(mouseX+camera[0]-(camera[0]%32))/32][(mouseY+camera[1]-(camera[1]%32))/32] == None:
+      
+      if blockingLayer.content2D[(mouseY-bb+camera[1])/32][(mouseX-aa+camera[0])/32] == None:
+         mouseColor = (0,255,255)
+      else:
+         mouseColor = (255,0,0)
+      
       s = pygame.Surface((32,32))
       s.set_alpha(80)
-      s.fill((0,255,255))
+      s.fill(mouseColor)
       screen.blit(s, (mouseX-aa,mouseY-bb))
       
       # draw characters
