@@ -3,30 +3,47 @@ import tiledtmxloader
 
 class AbstractMap():
    
-   width         = 0
-   height        = 0
-   characters    = []
-   mainChar      = None
-   mapFile       = ''
-   resources     = None
-   spriteLayers  = None
-   blockingLayer = None
-   aStarMap      = []
-   teleportTiles = []
+   width             = 0
+   height            = 0
+   characters        = []
+   mainChar          = None
+   mapFile           = ''
+   resources         = None
+   spriteLayers      = None
+   blockingLayer     = None
+   aStarMap          = []
+   teleportTiles     = []
+   tag               = ''
    
    def __init__(self):
-      self.resources = tiledtmxloader.helperspygame.ResourceLoaderPygame()
+      self.resources  = tiledtmxloader.helperspygame.ResourceLoaderPygame()
+      self.characters = []
+      self.aStarMap   = []
    
    def setWidthInTiles(self,width):
       self.width = width
       
    def setHeightInTiles(self,height):
       self.height = height
+      
+   def destroy(self):
+      self.width = 0
+      self.height = 0
+      self.characters    = []
+      self.mainChar      = None
+      self.mapFile       = ''
+      self.resources     = None
+      self.spriteLayers  = None
+      self.blockingLayer = None
+      self.aStarMap      = []
+      self.teleportTiles = []
+      self.tag           = ''
 
 class TownMap(AbstractMap):
    
    def __init__(self):
       AbstractMap.__init__(self)
+      self.tag = 'town'
       
       self.teleportTiles = [(14,19),(29,21),(39,19),(60,19),(72,19),(84,19),(95,14),
                             (10,49),(17,49),(35,49),(42,49),(56,49),(87,49),(96,82),
@@ -39,6 +56,7 @@ class TownMap(AbstractMap):
       char.x = 3*32
       char.y = 10*32
       char.setType(char.type3)
+      char.startpoint = (3,10)
       self.characters.append(char)
       self.mainChar = char
 
@@ -104,6 +122,7 @@ class HouseMap(AbstractMap):
    
    def __init__(self):
       AbstractMap.__init__(self)
+      self.tag = 'house'
       
       self.teleportTiles = [(13,18),(14,18)]
       
@@ -113,6 +132,7 @@ class HouseMap(AbstractMap):
       char = Character()
       char.x = 13*32
       char.y = 17*32
+      char.startpoint = (3,10)
       char.setType(char.type3)
       self.characters.append(char)
       self.mainChar = char
@@ -128,7 +148,7 @@ class HouseMap(AbstractMap):
             
       for i in range(0,self.height):
          for j in range(0,self.width):
-            if self.currentMap.blockingLayer.content2D[i][j] == None:
+            if self.blockingLayer.content2D[i][j] == None:
                self.aStarMap.append(1)
             else:
                self.aStarMap.append(-1)

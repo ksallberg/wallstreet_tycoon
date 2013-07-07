@@ -18,106 +18,135 @@ from view.map import *
 # the real time price changes and bot purchases
 #modelInit()
 
-currentMap = TownMap()
-
-widthInTiles  = 29
-heightInTiles = 19
-
-pygame.init()
-screen = pygame.display.set_mode((widthInTiles*32, heightInTiles*32))
-now = datetime.datetime.now()
-pygame.display.set_caption('Wallstreet Tycoon')
-clock = pygame.time.Clock()
-
-charSheet = pygame.image.load(os.path.join('resources','characters.png'))
-
-renderer = tiledtmxloader.helperspygame.RendererPygame()
-
-camera = [0,0]
-renderer.set_camera_position_and_size(camera[0],camera[1],widthInTiles*32,heightInTiles*32,'topleft')
-
 def loadImage(sheet, indexX, indexY):
-    rect = Rect((indexX,indexY, 32, 48))
-    image = Surface(rect.size, SRCALPHA)
-    image.blit(sheet, (0, 0), rect)
-    image.set_colorkey(-1, RLEACCEL)
-    return image
+   rect = Rect((indexX,indexY, 32, 48))
+   image = Surface(rect.size, SRCALPHA)
+   image.blit(sheet, (0, 0), rect)
+   image.set_colorkey(-1, RLEACCEL)
+   return image
 
-def main():
-   while True:
-      for event in pygame.event.get():
-         if   event.type == MOUSEBUTTONDOWN:
-            if currentMap.blockingLayer.content2D[(mouseY-bb+camera[1])/32][(mouseX-aa+camera[0])/32] == None:
-               mc = currentMap.mainChar
-               mc.startpoint = ((mc.x)/32,(mc.y)/32)
-               mc.endpoint   = (pygame.mouse.get_pos()[0]/32+camera[0]/32,pygame.mouse.get_pos()[1] / 32+camera[1]/32)
-               mc.pathlines = findPath(mc.startpoint,mc.endpoint,(currentMap.width,currentMap.height),currentMap.aStarMap)
-               mc.setMovingPositions(mc.pathlines)
+class Main():
+   
+   currentMap        = TownMap()
+   widthInTiles      = 29
+   heightInTiles     = 19
+   screen            = None
+   clock             = None
+   charSheet         = None
+   renderer          = None
+   camera            = None
+   mainCharPosBackup = (0,0)
+
+   def __init__(self):
+      pygame.init()
+      self.screen = pygame.display.set_mode((self.widthInTiles*32, self.heightInTiles*32))
+      
+      pygame.display.set_caption('Wallstreet Tycoon')
+      self.clock = pygame.time.Clock()
+
+      self.charSheet = pygame.image.load(os.path.join('resources','characters.png'))
+
+      self.renderer = tiledtmxloader.helperspygame.RendererPygame()
+
+      self.camera = [0,0]
+      self.renderer.set_camera_position_and_size(self.camera[0],self.camera[1],self.widthInTiles*32,self.heightInTiles*32,'topleft')
+
+   def mainLoop(self):
+   
+      while True:
+         
+         (mouseX,mouseY) = pygame.mouse.get_pos()
+         (xdiff,ydiff) = (mouseX%32,mouseY%32)
+         
+         for event in pygame.event.get():
+            if   event.type == MOUSEBUTTONDOWN:
+               if self.currentMap.blockingLayer.content2D[(mouseY+self.camera[1])/32][(mouseX+self.camera[0])/32] == None:
+                  mc = self.currentMap.mainChar
+                  mc.startpoint = ((mc.x)/32,(mc.y)/32)
+                  mc.endpoint   = (pygame.mouse.get_pos()[0]/32+self.camera[0]/32,pygame.mouse.get_pos()[1] / 32+self.camera[1]/32)
+                  mc.pathlines = findPath(mc.startpoint,mc.endpoint,(self.currentMap.width,self.currentMap.height),self.currentMap.aStarMap)
+                  mc.setMovingPositions(mc.pathlines)
             
-         elif event.type == pygame.KEYDOWN:
-            if   event.key == pygame.K_UP and camera[1] > 0:
-               camera[1] -= townmap.tileheight
-            elif event.key == pygame.K_DOWN and camera[1] < 2400:
-               camera[1] += townmap.tileheight
-            elif event.key == pygame.K_RIGHT and camera[0] < 2016:
-               camera[0] += townmap.tilewidth
-            elif event.key == pygame.K_LEFT  and camera[0] > 0:
-               camera[0] -= townmap.tilewidth
-         elif event.type == pygame.KEYUP:
-            print 'up'
+            elif event.type == pygame.KEYDOWN:
+               if   event.key == pygame.K_UP:
+                  print 'up'
+               elif event.key == pygame.K_DOWN:
+                  print 'down'
+               elif event.key == pygame.K_RIGHT:
+                  print 'right'
+               elif event.key == pygame.K_LEFT:
+                  print 'left'
+            elif event.type == pygame.KEYUP:
+               print 'up'
       
-      camera[0] = currentMap.mainChar.x + 16 - (widthInTiles / 2) * 32 - 32
-      camera[1] = currentMap.mainChar.y + 33 +16 - (heightInTiles / 2) * 32 - 64
+         self.camera[0] = self.currentMap.mainChar.x + 16     - (self.widthInTiles / 2) * 32 - 32
+         self.camera[1] = self.currentMap.mainChar.y + 33 +16 - (self.heightInTiles / 2) * 32 - 64
       
-      if camera[0] < 0:
-         camera[0] = 0
+         if self.camera[0] < 0:
+            self.camera[0] = 0
          
-      if camera[1] < 0:
-         camera[1] = 0
+         if self.camera[1] < 0:
+            self.camera[1] = 0
          
-      if camera[0] > (currentMap.width * 32) - (widthInTiles) * 32:
-         camera[0] = (currentMap.width * 32) - (widthInTiles) * 32
+         if self.camera[0] > (self.currentMap.width * 32) - (self.widthInTiles) * 32:
+            self.camera[0] = (self.currentMap.width * 32) - (self.widthInTiles) * 32
          
-      if camera[1] > (currentMap.height * 32) - (heightInTiles) * 32:
-         camera[1] = (currentMap.height * 32) - (heightInTiles) * 32
+         if self.camera[1] > (self.currentMap.height * 32) - (self.heightInTiles) * 32:
+            self.camera[1] = (self.currentMap.height * 32) - (self.heightInTiles) * 32
          
-      renderer.set_camera_position(camera[0],camera[1],'topleft')
+         self.renderer.set_camera_position(self.camera[0],self.camera[1],'topleft')
       
-      screen.fill((0, 0, 0))
+         self.screen.fill((0, 0, 0))
       
-      for sprite_layer in currentMap.spriteLayers:
-         if sprite_layer.is_object_group:
-            continue
+         for sprite_layer in self.currentMap.spriteLayers:
+            if sprite_layer.is_object_group:
+               continue
+            else:
+               if sprite_layer.layer_idx != 2:
+                  self.renderer.render_layer(self.screen, sprite_layer)
+      
+         mouseColor = None
+         if self.currentMap.blockingLayer.content2D[(mouseY-ydiff+self.camera[1])/32][(mouseX-xdiff+self.camera[0])/32] == None:
+            mouseColor = (0,255,255)
          else:
-            if sprite_layer.layer_idx != 2:
-               renderer.render_layer(screen, sprite_layer)
+            mouseColor = (255,0,0)
       
-      (mouseX,mouseY) = pygame.mouse.get_pos()
+         s = pygame.Surface((32,32))
+         s.set_alpha(80)
+         s.fill(mouseColor)
+         self.screen.blit(s, (mouseX-xdiff,mouseY-ydiff))
       
-      (xdiff,ydiff) = (mouseX%32,mouseY%32)
+         # draw characters
+         for ch in self.currentMap.characters:
+            chpos = ch.getOffset()
+            img = loadImage(self.charSheet,
+                            chpos[0],
+                            chpos[1]
+                           )
+            self.screen.blit(img, (ch.x-self.camera[0]-16, ch.y-33-self.camera[1]))
       
-      mouseColor = None
-      if currentMap.blockingLayer.content2D[(mouseY-ydiff+camera[1])/32][(mouseX-xdiff+camera[0])/32] == None:
-         mouseColor = (0,255,255)
-      else:
-         mouseColor = (255,0,0)
-      
-      s = pygame.Surface((32,32))
-      s.set_alpha(80)
-      s.fill(mouseColor)
-      screen.blit(s, (mouseX-xdiff,mouseY-ydiff))
-      
-      # draw characters
-      for ch in currentMap.characters:
-         chpos = ch.getOffset()
-         img = loadImage(charSheet,
-                         chpos[0],
-                         chpos[1]
-                        )
-         screen.blit(img, (ch.x-camera[0]-16, ch.y-33-camera[1]))
-      
-      pygame.display.flip()
-      clock.tick(25)
+         # time to teleport?
+         if (self.currentMap.mainChar.x/32,self.currentMap.mainChar.y/32) in self.currentMap.teleportTiles:
+         
+            if self.currentMap.tag == 'town':
+               self.mainCharPosBackup = (self.currentMap.mainChar.x,self.currentMap.mainChar.y)
+               self.currentMap.destroy()
+               self.currentMap = HouseMap()
+            else:
+               self.currentMap.destroy()
+               self.currentMap = TownMap()
+               self.currentMap.mainChar.x = self.mainCharPosBackup[0]
+               self.currentMap.mainChar.y = self.mainCharPosBackup[1] + 32
+            
+            self.screen.fill((0, 0, 0))
+            pygame.display.flip()
+            pygame.time.delay(200)
+            self.clock.tick(25)
+            continue
+         
+         pygame.display.flip()
+         self.clock.tick(25)
       
 if __name__ == '__main__':
-   main()
+   main = Main()
+   main.mainLoop()

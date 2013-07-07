@@ -59,6 +59,9 @@ class Character:
    animState = 0
    curAnim = None
    
+   def __init__(self):
+      self.movingPositions = []
+   
    def setMovingPositions(this,mp):
       this.movingPositions = mp
    
@@ -66,7 +69,7 @@ class Character:
       
       offset = (0,0)
       
-      if len(this.movingPositions) > 0:
+      if this.movingPositions and len(this.movingPositions) > 0:
          
          this.state = this.STATE_WALKING
          
