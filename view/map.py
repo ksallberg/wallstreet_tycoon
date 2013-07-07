@@ -53,8 +53,8 @@ class TownMap(AbstractMap):
       self.setHeightInTiles(100)
       
       char = Character()
-      char.x = 3*32
-      char.y = 10*32
+      char.x = 3*32+16
+      char.y = 10*32+16
       char.setType(char.type3)
       char.startpoint = (3,10)
       self.characters.append(char)
@@ -130,8 +130,8 @@ class HouseMap(AbstractMap):
       self.setHeightInTiles(19)
       
       char = Character()
-      char.x = 13*32
-      char.y = 17*32
+      char.x = 13*32+16
+      char.y = 17*32+16
       char.startpoint = (3,10)
       char.setType(char.type3)
       self.characters.append(char)

@@ -136,7 +136,7 @@ class Main():
                self.currentMap.destroy()
                self.currentMap = TownMap()
                self.currentMap.mainChar.x = self.mainCharPosBackup[0]
-               self.currentMap.mainChar.y = self.mainCharPosBackup[1] + 32
+               self.currentMap.mainChar.y = self.mainCharPosBackup[1] + 32 + 16
             
             self.screen.fill((0, 0, 0))
             pygame.display.flip()
