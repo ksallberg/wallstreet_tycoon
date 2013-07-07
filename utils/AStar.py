@@ -185,6 +185,8 @@ def findPath(startpoint,endpoint,(width,height),aStarMap):
 
    if not p:
       print 'No path found!'
+      print startpoint
+      print endpoint
    else:
       _pathlines = []
       _pathlines.append((start.x*32+16,start.y*32+16))

@@ -13,6 +13,7 @@ import copy
 from pygame import *
 from control.scheduledEvents import *
 from view.map import *
+from logic.chance import applyChance
 
 # starts the background process that simulates
 # the real time price changes and bot purchases
@@ -124,7 +125,21 @@ class Main():
                             chpos[1]
                            )
             self.screen.blit(img, (ch.x-self.camera[0]-16, ch.y-33-self.camera[1]))
-      
+            
+            # walk somewhere?
+            if ch != self.currentMap.mainChar:
+               if applyChance(5):
+                  if ch.movingPositions == []:
+                     ch.startpoint = ((ch.x)/32,(ch.y)/32)
+                     ch.endpoint   = (ch.startpoint[0]+random.randint(0,10)-random.randint(0,10),ch.startpoint[1]+random.randint(0,10)-random.randint(0,10))
+                     if (ch.endpoint[0] < self.currentMap.width and
+                        ch.endpoint[1] < self.currentMap.height and
+                        ch.endpoint[0] > 0 and ch.endpoint[1] > 0):
+                     # if the endpoint is a valid point, let's go there!
+                        if self.currentMap.blockingLayer.content2D[ch.endpoint[1]][ch.endpoint[0]] == None:
+                           ch.pathlines = findPath(ch.startpoint,ch.endpoint,(self.currentMap.width,self.currentMap.height),self.currentMap.aStarMap)
+                           ch.setMovingPositions(ch.pathlines)
+                     
          # time to teleport?
          if (self.currentMap.mainChar.x/32,self.currentMap.mainChar.y/32) in self.currentMap.teleportTiles:
          
