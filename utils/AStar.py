@@ -174,3 +174,22 @@ class SQ_MapHandler:
             return n
 
         return None    
+
+# Modified by me to fit my game
+def findPath(startpoint,endpoint,(width,height),aStarMap):
+   astar = AStar(SQ_MapHandler(aStarMap,width,height))
+   start = SQ_Location(startpoint[0],startpoint[1])
+   end   = SQ_Location(endpoint[0],endpoint[1])
+   
+   p = astar.findPath(start,end)
+
+   if not p:
+      print 'No path found!'
+   else:
+      _pathlines = []
+      _pathlines.append((start.x*32+16,start.y*32+16))
+      for n in p.nodes:
+          _pathlines.append((n.location.x*32+16,n.location.y*32+16))
+      _pathlines.append((end.x*32+16,end.y*32+16))
+
+      return _pathlines

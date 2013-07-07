@@ -15,6 +15,10 @@ class Character:
    
    movingPositions = []
    
+   startpoint  = (0,0)
+   endpoint    = (0,0)
+   pathlines   = []
+   
    # These describe where each 
    # character's different sprites
    # are located.
