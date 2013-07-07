@@ -15,10 +15,6 @@ from control.scheduledEvents import *
 from view.map import *
 from logic.chance import applyChance
 
-# starts the background process that simulates
-# the real time price changes and bot purchases
-#modelInit()
-
 def loadImage(sheet, indexX, indexY):
    rect = Rect((indexX,indexY, 32, 48))
    image = Surface(rect.size, SRCALPHA)
@@ -38,8 +34,12 @@ class Main():
    camera             = None
    mainCharPosBackup  = (0,0)
    charClippingOffset = 32
+   repeatedTimer      = None
 
    def __init__(self):
+      
+      self.repeatedTimer = modelInit()
+      
       pygame.init()
       self.screen = pygame.display.set_mode((self.widthInTiles*32, self.heightInTiles*32))
       
@@ -52,7 +52,7 @@ class Main():
 
       self.camera = [0,0]
       self.renderer.set_camera_position_and_size(self.camera[0],self.camera[1],self.widthInTiles*32,self.heightInTiles*32,'topleft')
-
+      
    def mainLoop(self):
    
       while True:
@@ -69,9 +69,13 @@ class Main():
                   mc.pathlines = findPath(mc.startpoint,mc.endpoint,(self.currentMap.width,self.currentMap.height),self.currentMap.aStarMap)
                   mc.setMovingPositions(mc.pathlines)
             
+            elif event.type == QUIT:
+               self.repeatedTimer.stop()
+               raise SystemExit
+               
             elif event.type == pygame.KEYDOWN:
-               if   event.key == pygame.K_UP:
-                  print 'up'
+               if   event.key == K_k:
+                  print 'k!'
                elif event.key == pygame.K_DOWN:
                   print 'down'
                elif event.key == pygame.K_RIGHT:
@@ -170,7 +174,7 @@ class Main():
          
          pygame.display.flip()
          self.clock.tick(25)
-      
+
 if __name__ == '__main__':
    main = Main()
    main.mainLoop()

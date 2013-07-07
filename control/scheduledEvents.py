@@ -1,3 +1,5 @@
+import os
+
 from logic.priceManipulation     import calcNewPrice
 from gamemodels.models           import Company, Stock, Investor
 from django.db.models            import Max
@@ -8,6 +10,7 @@ from utils.timer                 import RepeatedTimer
 from subprocess                  import call
 from utils.loading               import Loader
 from logic.generation            import *
+
 # start up the game
 def modelInit():
    if connection.introspection.table_names() == []:
@@ -22,17 +25,19 @@ def modelInit():
       companyNames     = []
       investorNames    = []
       
-      for i in range(1,100): #create 100 companies
+      for i in range(1,50): #create 50 companies
          newCompany = generateCompanyName(compNameSettings,companyNames)
          companyNames.append(newCompany)
       
-      for i in range(1,20): #create 20 investors
+      for i in range(1,16): #create 16 investors
          newInvestor = generateInvestorName(inveNameSettings,investorNames)
          investorNames.append(newInvestor)
    
       generateNewRound(companyNames,investorNames)
       
-   rt = RepeatedTimer(10,handleHour) # 10 game seconds is one hour
+   rt = RepeatedTimer(20,handleHour) # 10 game seconds is one hour
+   handleHour()
+   return rt
 
 # Every hour of the stock, this function
 # handles calculating new prices for each of
