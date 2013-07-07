@@ -18,7 +18,7 @@ from control.scheduledEvents import *
 #modelInit()
 
 widthInTiles  = 29#37
-heightInTiles = 20
+heightInTiles = 19
 
 totalWidthInTiles  = 100
 totalHeightInTiles = 100
@@ -93,9 +93,6 @@ resources.load(townmap)
 renderer = tiledtmxloader.helperspygame.RendererPygame()
 
 camera = [0,0]
-
-
-
 renderer.set_camera_position_and_size(camera[0],camera[1],widthInTiles*32,heightInTiles*32,'topleft')
 
 sprite_layers = tiledtmxloader.helperspygame.get_layers_from_map(resources)
@@ -104,21 +101,18 @@ aStarMap = []
 blockingLayer = None
 global startpoint
 startpoint = (6,14)
-#endpoint   = (31,14)
 global endpoint
 endpoint   = (14,19)
 global pathlines
 pathlines = []
-
-
 
 # testing blocking layers
 for layer in sprite_layers:
    if layer.layer_idx == 2:
       blockingLayer = layer
 
-for i in range(0,totalHeightInTiles):#heightInTiles):
-   for j in range(0,totalWidthInTiles):#widthInTiles):
+for i in range(0,totalHeightInTiles):
+   for j in range(0,totalWidthInTiles):
       
       if i == startpoint[0] and j == startpoint[1]:
          aStarMap.append(5)
@@ -130,9 +124,6 @@ for i in range(0,totalHeightInTiles):#heightInTiles):
             aStarMap.append(1)
          else:
             aStarMap.append(-1)
-
-
-
 
 """
 map!
@@ -148,7 +139,6 @@ def findPath():
    if not p:
       print 'No path found!'
    else:
-      #print 'Path found!' + str(len(p.nodes))
       _pathlines = []
       _pathlines.append((start.x*32+16,start.y*32+16))
       for n in p.nodes:
@@ -175,13 +165,10 @@ def main():
                global endpoint
                global startpoint
                startpoint = ((char.x)/32,(char.y)/32)
-               endpoint   = (pygame.mouse.get_pos()[0]/32+camera[0]/32,pygame.mouse.get_pos()[1] / 32+camera[1]/32)#(round(camera[0]/32+pygame.mouse.get_pos()[0] / 32),round(camera[1]/32+pygame.mouse.get_pos()[1] / 32))
-               #print "new endpoint" + str(endpoint)
+               endpoint   = (pygame.mouse.get_pos()[0]/32+camera[0]/32,pygame.mouse.get_pos()[1] / 32+camera[1]/32)
                global pathlines
                pathlines = findPath()
                char.setMovingPositions(copy.deepcopy(pathlines))
-            
-            #print camera
             
          elif event.type == pygame.KEYDOWN:
             if   event.key == pygame.K_UP and camera[1] > 0:
@@ -195,8 +182,8 @@ def main():
          elif event.type == pygame.KEYUP:
             print 'up'
       
-      camera[0] = char.x + 16 - (widthInTiles / 2) * 32
-      camera[1] = char.y + 33 +16 - (heightInTiles / 2) * 32
+      camera[0] = char.x + 16 - (widthInTiles / 2) * 32 - 32
+      camera[1] = char.y + 33 +16 - (heightInTiles / 2) * 32 - 64
       
       if camera[0] < 0:
          camera[0] = 0
@@ -227,8 +214,6 @@ def main():
       
       mouseColor = None
       
-      #if blockingLayer.content2D[(mouseX+camera[0]-(camera[0]%32))/32][(mouseY+camera[1]-(camera[1]%32))/32] == None:
-      
       if blockingLayer.content2D[(mouseY-bb+camera[1])/32][(mouseX-aa+camera[0])/32] == None:
          mouseColor = (0,255,255)
       else:
@@ -247,11 +232,6 @@ def main():
                          chpos[1]
                         )
          screen.blit(img, (ch.x-camera[0]-16, ch.y-33-camera[1]))
-      
-      #pathlines = findPath()
-      
-#      if pathlines and len(pathlines) > 0:
-#         pygame.draw.lines(screen, (255,255,255,255), 0, [(x-camera[0],y-camera[1]) for (x,y) in pathlines])
       
       pygame.display.flip()
       clock.tick(25)
