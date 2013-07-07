@@ -1,3 +1,5 @@
+import os
+
 class Character:
    
    DIR_SOUTH = "south"
@@ -10,6 +12,8 @@ class Character:
    
    charWidth  = 32
    charHeight = 48
+   
+   movingPositions = []
    
    # These describe where each 
    # character's different sprites
@@ -47,14 +51,42 @@ class Character:
    direction = DIR_SOUTH
    x = 0
    y = 0
-   picture = 'resources/characters.py'
+   picture = os.path.join('resources','characters.png')
    animState = 0
    curAnim = None
+   
+   def setMovingPositions(this,mp):
+      this.movingPositions = mp
    
    def getOffset(this):
       
       offset = (0,0)
       
+      if len(this.movingPositions) > 0:
+         
+         this.state = this.STATE_WALKING
+         
+         if this.x == this.movingPositions[0][0] and this.y == this.movingPositions[0][1]:
+            if len(this.movingPositions)>0:
+               this.movingPositions.pop(0)
+         
+         if len(this.movingPositions)>0:
+            if this.x < this.movingPositions[0][0]:
+               this.x += 4
+               this.setDir(this.DIR_EAST)
+            elif this.x > this.movingPositions[0][0]:
+               this.x -= 4
+               this.setDir(this.DIR_WEST)
+         
+            if this.y < this.movingPositions[0][1]:
+               this.y += 4
+               this.setDir(this.DIR_SOUTH)
+            elif this.y > this.movingPositions[0][1]:
+               this.y -= 4
+               this.setDir(this.DIR_NORTH)
+      else:
+         this.state = this.STATE_STANDING
+         
       if   this.state == this.STATE_STANDING:
          if   this.direction == this.DIR_SOUTH:
             offset = (this.type[0]+this.south2[0],this.type[1]+this.south2[1])
@@ -124,7 +156,3 @@ class Character:
    
    def setType(this,type):
       this.type = type
-   
-   def setState(this,state):
-      this.state = state
-      this.setDir(this.direction)

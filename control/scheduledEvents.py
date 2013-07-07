@@ -17,8 +17,8 @@ def modelInit():
       
       # load names to create
       loader           = Loader()
-      compNameSettings = loader.loadJSON('json/company_names.json')
-      inveNameSettings = loader.loadJSON('json/investor_names.json')
+      compNameSettings = loader.loadJSON(os.path.join('json','company_names.json'))
+      inveNameSettings = loader.loadJSON(os.path.join('json','investor_names.json'))
       companyNames     = []
       investorNames    = []
       
