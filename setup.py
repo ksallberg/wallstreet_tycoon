@@ -9,7 +9,7 @@ setup(name             = 'wallstreet_tycoon',
       description      = 'A stock simulation game.',
       install_requires = ['Django >= 1.5.1',
                           'pyglet >= 1.1.4',
-                          'tiledtmxloader >= 3.0.3.114',
+                          'tiledtmxloader >= 3.0.3',
                           'pygame>=1.9.1',
                          ],
       
