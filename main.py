@@ -14,9 +14,17 @@ from pygame import *
 from control.scheduledEvents import *
 from view.map import *
 from logic.chance import applyChance
+from view.gui import MainMenu
 
 def loadImage(sheet, indexX, indexY):
    rect = Rect((indexX,indexY, 32, 48))
+   image = Surface(rect.size, SRCALPHA)
+   image.blit(sheet, (0, 0), rect)
+   image.set_colorkey(-1, RLEACCEL)
+   return image
+
+def loadImageSize(sheet, x, y, w, h):
+   rect = Rect((x, y, w, h))
    image = Surface(rect.size, SRCALPHA)
    image.blit(sheet, (0, 0), rect)
    image.set_colorkey(-1, RLEACCEL)
@@ -35,6 +43,7 @@ class Main():
    mainCharPosBackup  = (0,0)
    charClippingOffset = 32
    repeatedTimer      = None
+   mainMenu           = MainMenu()
 
    def __init__(self):
       
@@ -52,7 +61,11 @@ class Main():
 
       self.camera = [0,0]
       self.renderer.set_camera_position_and_size(self.camera[0],self.camera[1],self.widthInTiles*32,self.heightInTiles*32,'topleft')
-      
+   
+   def exit(self):
+      self.repeatedTimer.stop()
+      raise SystemExit
+   
    def mainLoop(self):
    
       while True:
@@ -62,7 +75,24 @@ class Main():
          
          for event in pygame.event.get():
             if   event.type == MOUSEBUTTONDOWN:
-               if self.currentMap.blockingLayer.content2D[(mouseY+self.camera[1])/32][(mouseX+self.camera[0])/32] == None:
+               
+               # if the main menu is used
+               if (mouseX >= self.mainMenu.x and mouseX <= self.mainMenu.x + self.mainMenu.width and
+                   mouseY >= self.mainMenu.y and mouseY <= self.mainMenu.y + self.mainMenu.height
+                  ):
+                  if self.mainMenu.isOpen:
+                     
+                     btn = self.mainMenu.findPressed(mouseX,mouseY)
+                     
+                     if btn != None:
+                        if btn.label == 'exit':
+                           self.exit()
+                        
+                     self.mainMenu.close()
+                  else:
+                     self.mainMenu.open()
+               
+               elif self.currentMap.blockingLayer.content2D[(mouseY+self.camera[1])/32][(mouseX+self.camera[0])/32] == None:
                   mc = self.currentMap.mainChar
                   mc.startpoint = ((mc.x)/32,(mc.y)/32)
                   mc.endpoint   = (pygame.mouse.get_pos()[0]/32+self.camera[0]/32,pygame.mouse.get_pos()[1] / 32+self.camera[1]/32)
@@ -70,8 +100,7 @@ class Main():
                   mc.setMovingPositions(mc.pathlines)
             
             elif event.type == QUIT:
-               self.repeatedTimer.stop()
-               raise SystemExit
+               self.exit()
                
             elif event.type == pygame.KEYDOWN:
                if   event.key == K_k:
@@ -171,6 +200,15 @@ class Main():
             pygame.time.delay(200)
             self.clock.tick(25)
             continue
+         
+         # Draw the main menu
+         mainMenuImg = loadImageSize(self.mainMenu.sheet,
+                                     0,
+                                     0,
+                                     self.mainMenu.width,
+                                     self.mainMenu.height
+                                    )
+         self.screen.blit(mainMenuImg, (10, 10))
          
          pygame.display.flip()
          self.clock.tick(25)
