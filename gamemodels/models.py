@@ -35,6 +35,8 @@ class Investor(models.Model):
    name      = models.CharField(max_length=100)
    cash      = models.IntegerField()
    type      = models.CharField(max_length=6) #should be 'bot' or 'player'
+   sex       = models.CharField(max_length=6) #male or female
+   sprite    = models.CharField(max_length=100) #identifier of this player's sprite
    
    def __unicode__(self):
       return self.name
