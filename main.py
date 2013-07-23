@@ -1,21 +1,22 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'djangosettings'
 import control.savesLookup
-from control.savesLookup import findExistingRounds, createSettingsFile, createNewFile
+from control.savesLookup        import findExistingRounds, createSettingsFile, createNewFile
 import view.character
-from view.character import Character
+from view.character             import Character
 import pygame
 import math
 import datetime
 import time
 import tiledtmxloader
-from utils.AStar import findPath, AStar
+from utils.AStar                import findPath, AStar
 import copy
-from pygame import *
-from control.scheduledEvents import *
-from view.map import *
-from logic.chance import applyChance
-from view.gui import *
+from pygame                     import *
+from control.scheduledEvents    import *
+from view.map                   import *
+from logic.chance               import applyChance
+from view.gui                   import *
+from gamemodels.models          import  Investor
 
 def loadImage(sheet, indexX, indexY):
    rect = Rect((indexX,indexY, 32, 48))
@@ -142,6 +143,7 @@ class Main():
                elif btn.label == 'saveChar':
                   #createNewFile()
                   self.repeatedTimer = modelInit((self.currentGUI.name,self.currentGUI.character))
+                  self.currentMap.injectCharacters(Investor.objects.all())
                   self.currentState = self.STATE_GAME_MODE
                      
          elif event.type == QUIT:
@@ -208,7 +210,7 @@ class Main():
          elif event.type == pygame.KEYUP:
             print 'up'
 
-      self.camera[0] = self.currentMap.mainChar.x + 16     - (self.widthInTiles / 2) * 32 - 32
+      self.camera[0] = self.currentMap.mainChar.x + 16     - (self.widthInTiles / 2)  * 32 - 32
       self.camera[1] = self.currentMap.mainChar.y + 33 +16 - (self.heightInTiles / 2) * 32 - 64
 
       if self.camera[0] < 0:
@@ -252,9 +254,9 @@ class Main():
       
          #character clipping!
          if (ch.x >= self.camera[0] - self.charClippingOffset and
-             ch.x <= self.camera[0] + self.widthInTiles*32 + self.charClippingOffset and
+             ch.x <= self.camera[0] + self.widthInTiles  * 32 + self.charClippingOffset and
              ch.y >= self.camera[1] - self.charClippingOffset and
-             ch.y <= self.camera[1] + self.heightInTiles*32 + self.charClippingOffset):
+             ch.y <= self.camera[1] + self.heightInTiles * 32 + self.charClippingOffset):
           
             img = loadImage(self.charSheet,
                             chpos[0],
@@ -286,6 +288,7 @@ class Main():
          else:
             self.currentMap.destroy()
             self.currentMap = TownMap()
+            self.currentMap.injectCharacters(Investor.objects.all())
             self.currentMap.mainChar.x = self.mainCharPosBackup[0]
             self.currentMap.mainChar.y = self.mainCharPosBackup[1] + 32 + 16
       
