@@ -57,7 +57,7 @@ def generateInvestorName(json,existingNames):
    
 # Populate a new savefile with some randomized
 # content so that a new round can begin
-def generateNewRound(companyNames,investorNames):
+def generateNewRound(companyNames,investorNames,playerInput):
    
    # Create random companies
    for i in range(0,len(companyNames)-1):
@@ -79,15 +79,17 @@ def generateNewRound(companyNames,investorNames):
    # Create random investors
    for i in range(0,len(investorNames)-1):
       
-      inv = Investor()
-      inv.name = investorNames[i]
-      inv.cash = 50000
-      inv.type = 'bot'
+      inv        = Investor()
+      inv.name   = investorNames[i]
+      inv.sprite = 'char1'
+      inv.cash   = 50000
+      inv.type   = 'bot'
       inv.save()
       
    # Create the player
-   player = Investor()
-   player.name = 'The Player'
-   player.cash = 50000
-   player.type = 'player'
+   player        = Investor()
+   player.name   = playerInput[0]
+   player.sprite = playerInput[1]
+   player.cash   = 50000
+   player.type   = 'player'
    player.save()

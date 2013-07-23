@@ -89,11 +89,17 @@ class CharacterLoading(AbstractGUI):
    y                 = 28
    width             = 486
    height            = 516
+   currentSelected   = None
+   
+   wantedSaveName    = ''
+   saveFiles         = []
    
    sheet             = pygame.image.load(os.path.join('resources','loadCharacter.png'))
+   selectorSheet     = pygame.image.load(os.path.join('resources','selector.png'))
    
    def __init__(self):
       AbstractGUI.__init__(self)
+      self.saveFiles = []    
       backBtn        = Button()
       backBtn.x      = 271
       backBtn.y      = 56
@@ -165,7 +171,30 @@ class CharacterLoading(AbstractGUI):
       loadBtn.height = 72
       loadBtn.label  = 'doLoad'
       self.buttons.append(loadBtn)
-
+      
+   def injectLoadData(self,data):
+      self.saveFiles = data
+      
+   def drawExtras(self,screen,input):
+      for i in range(0,len(self.saveFiles)):
+         font  = pygame.font.SysFont('monospace',20)
+         label = font.render(self.saveFiles[i], 1, (255,255,255))
+         screen.blit(label,(262,130+i*70))
+         
+      if self.currentSelected != None:
+         interfacesImg = loadImageSize(self.selectorSheet,
+                                    0,
+                                    0,
+                                    24,
+                                    25
+                                   )
+         screen.blit(interfacesImg, (688, 128 + self.currentSelected*71))
+   
+   def setSelector(self,number):
+      self.currentSelected = int(number[7])-1 #take the number from the name and subtract 1 to make it an index
+      self.wantedSaveName  = self.saveFiles[self.currentSelected]
+      print self.currentSelected
+   
 class CharacterCreation(AbstractGUI):
    
    char1Name = 'char1'

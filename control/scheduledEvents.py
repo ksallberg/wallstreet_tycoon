@@ -12,8 +12,8 @@ from utils.loading               import Loader
 from logic.generation            import *
 
 # start up the game
-def modelInit():
-   if connection.introspection.table_names() == []:
+def modelInit(playerInput):
+   if connection.introspection.table_names() == [] and playerInput != None:
       print 'save file DOES NOT exist'
       
       call(["python", "manage.py", "syncdb"])
@@ -33,7 +33,7 @@ def modelInit():
          newInvestor = generateInvestorName(inveNameSettings,investorNames)
          investorNames.append(newInvestor)
    
-      generateNewRound(companyNames,investorNames)
+      generateNewRound(companyNames,investorNames,playerInput)
       
    rt = RepeatedTimer(20,handleHour) # 10 game seconds is one hour
    handleHour()

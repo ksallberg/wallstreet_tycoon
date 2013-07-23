@@ -28,9 +28,9 @@ def findExistingRounds():
                                             )
           ]
 
-# !!!!!!!!!!!!_______
-# This is run straigh here in the code, because this 
-# needs to be done before any django models are imported.
-if findExistingRounds() == []:
+def createNewFile():
    currTime = 'saves/'+strftime("%Y-%m-%d-%H-%M-%S", gmtime())+'.save'
    createSettingsFile(currTime)
+   
+# first thing to do
+createNewFile()

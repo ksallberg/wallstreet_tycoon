@@ -1,6 +1,7 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'djangosettings'
 import control.savesLookup
+from control.savesLookup import findExistingRounds, createSettingsFile, createNewFile
 import view.character
 from view.character import Character
 import pygame
@@ -51,14 +52,11 @@ class Main():
    repeatedTimer      = None
    mainMenu           = MainMenu()
    currentGUI         = None
-   
    gameRunning        = True
-
    startScreen        = StartScreen()
+   
 
    def __init__(self):
-      
-      #self.repeatedTimer = modelInit()
       
       self.currentGUI = StartMainMenu()
       
@@ -111,12 +109,15 @@ class Main():
       
       if self.currentState == self.STATE_CHARACTER_CREATION:
          self.currentGUI.drawExtras(self.screen,None)
-      
+      elif self.currentState == self.STATE_CHARACTER_LOADING:
+         self.currentGUI.drawExtras(self.screen,None)
+         
       for event in pygame.event.get():
          if event.type == MOUSEBUTTONDOWN:
             
             btn = self.currentGUI.findPressed(mouseX,mouseY)
             
+            # some sort of event handling for the start screen
             if btn != None:
                print btn.label
                if btn.label == 'createChar':
@@ -127,12 +128,22 @@ class Main():
                   self.currentState = self.STATE_START_SCREEN
                elif btn.label == 'exit':
                   self.exit()
-               elif btn.label[:4] == 'char':
+               elif btn.label[:4] == 'char' or btn.label[:7] == 'loading':
                   self.currentGUI.setSelector(btn.label)
                elif btn.label == 'loadChar':
                   self.currentGUI   = CharacterLoading()
+                  self.currentGUI.injectLoadData(findExistingRounds())
                   self.currentState = self.STATE_CHARACTER_LOADING
-               
+               elif btn.label == 'doLoad':
+                  if self.currentGUI.currentSelected != None:
+                     createSettingsFile(self.currentGUI.wantedSaveName)
+                     self.repeatedTimer = modelInit(None)
+                     self.currentState = self.STATE_GAME_MODE
+               elif btn.label == 'saveChar':
+                  #createNewFile()
+                  self.repeatedTimer = modelInit((self.currentGUI.name,self.currentGUI.character))
+                  self.currentState = self.STATE_GAME_MODE
+                     
          elif event.type == QUIT:
             self.exit()
          
