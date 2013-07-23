@@ -1,4 +1,5 @@
 import random
+from random import choice
 from gamemodels.models import *
 
 # a company name generator
@@ -80,8 +81,17 @@ def generateNewRound(companyNames,investorNames,playerInput):
    for i in range(0,len(investorNames)-1):
       
       inv        = Investor()
-      inv.name   = investorNames[i]
-      inv.sprite = 'char1'
+      inv.name   = investorNames[i].split(' ')[0][2:] + ' ' + investorNames[i].split(' ')[1] #remove m_ or f_ for sprite sex
+      
+      #if investor's name is male, then pick a male sprite
+      if investorNames[i].split(' ')[0][:2] == 'm_':
+         inv.sprite = choice(['char1','char3','char4','char5'])
+      #else pick a female sprite
+      elif investorNames[i].split(' ')[0][:2] == 'f_':
+         inv.sprite = choice(['char2','char6','char7','char8'])
+      else:
+         print 'Error generation.py: generateNewRound: Non existing sex defined in json file.' 
+      
       inv.cash   = 50000
       inv.type   = 'bot'
       inv.save()
