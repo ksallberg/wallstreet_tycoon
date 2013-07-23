@@ -394,3 +394,57 @@ class MainMenu(AbstractGUI):
    def close(self):
       self.height = self.minHeight
       self.isOpen = False
+      
+class MarketGUI(AbstractGUI):
+   
+   width     = 326
+   height    = 517
+   x         = 375
+   y         = 28
+   sheet     = pygame.image.load(os.path.join('resources','marketGUI.png'))
+   
+   def __init__(self):
+      
+      closeBtn        = Button()
+      closeBtn.x      = 379
+      closeBtn.y      = 483
+      closeBtn.width  = 185
+      closeBtn.height = 60
+      closeBtn.label  = 'closeGUI'
+      self.buttons.append(closeBtn)
+      
+class PortfolioGUI(AbstractGUI):
+   
+   width     = 326
+   height    = 517
+   x         = 375
+   y         = 28
+   sheet     = pygame.image.load(os.path.join('resources','portfolioGUI.png'))
+   
+   def __init__(self):
+      
+      closeBtn        = Button()
+      closeBtn.x      = 379
+      closeBtn.y      = 483
+      closeBtn.width  = 185
+      closeBtn.height = 60
+      closeBtn.label  = 'closeGUI'
+      self.buttons.append(closeBtn)
+      
+class OpponentsGUI(AbstractGUI):
+   
+   width     = 326
+   height    = 517
+   x         = 375
+   y         = 28
+   sheet     = pygame.image.load(os.path.join('resources','opponentsGUI.png'))
+   
+   def __init__(self):
+      
+      closeBtn        = Button()
+      closeBtn.x      = 379
+      closeBtn.y      = 483
+      closeBtn.width  = 185
+      closeBtn.height = 60
+      closeBtn.label  = 'closeGUI'
+      self.buttons.append(closeBtn)

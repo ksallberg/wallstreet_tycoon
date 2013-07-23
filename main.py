@@ -12,11 +12,10 @@ import tiledtmxloader
 from utils.AStar                import findPath, AStar
 import copy
 from pygame                     import *
-from control.scheduledEvents    import *
 from view.map                   import *
 from logic.chance               import applyChance
 from view.gui                   import *
-from gamemodels.models          import  Investor
+import random
 
 def loadImage(sheet, indexX, indexY):
    rect = Rect((indexX,indexY, 32, 48))
@@ -38,6 +37,9 @@ class Main():
    STATE_CHARACTER_CREATION = 'stateCharacterCreation'
    STATE_CHARACTER_LOADING  = 'stateCharacterLoading'
    STATE_GAME_MODE          = 'stateGameMode'
+   STATE_GUI_PORTFOLIO      = 'stateGuiPortfolio'
+   STATE_GUI_OPPONENTS      = 'stateGuiOpponents'
+   STATE_GUI_MARKET         = 'stateGuiMarket'
    
    currentState       = STATE_START_SCREEN # initialize with the start screen
    currentMap         = TownMap()
@@ -136,34 +138,35 @@ class Main():
                   self.currentGUI.injectLoadData(findExistingRounds())
                   self.currentState = self.STATE_CHARACTER_LOADING
                elif btn.label == 'doLoad':
+                  
                   if self.currentGUI.currentSelected != None:
-                     createSettingsFile(self.currentGUI.wantedSaveName)
+                     createSettingsFile('saves/'+self.currentGUI.wantedSaveName)
+
+                     from control.scheduledEvents    import modelInit
+                     from gamemodels.models          import Investor
                      self.repeatedTimer = modelInit(None)
+                     self.currentMap.injectCharacters(Investor.objects.all())
                      self.currentState = self.STATE_GAME_MODE
+                     self.currentGUI = None
+                     
                elif btn.label == 'saveChar':
-                  #createNewFile()
+                  
+                  createNewFile() #new name
+                  from control.scheduledEvents    import modelInit
+                  from gamemodels.models          import Investor
                   self.repeatedTimer = modelInit((self.currentGUI.name,self.currentGUI.character))
                   self.currentMap.injectCharacters(Investor.objects.all())
                   self.currentState = self.STATE_GAME_MODE
+                  self.currentGUI = None
                      
          elif event.type == QUIT:
             self.exit()
          
          elif event.type == pygame.KEYDOWN:
             
+            # This is listening to the text field
             if self.currentState == self.STATE_CHARACTER_CREATION:
                self.currentGUI.addNameChar(pygame.key.name(event.key))
-            
-            if   event.key == K_k:
-               print 'k!'
-            elif event.key == pygame.K_DOWN:
-               'down'
-            elif event.key == pygame.K_RIGHT:
-               print 'right'
-            elif event.key == pygame.K_LEFT:
-               print 'left'
-         elif event.type == pygame.KEYUP:
-            'up'
    
    def renderMap(self):
       (mouseX,mouseY) = pygame.mouse.get_pos()
@@ -181,13 +184,35 @@ class Main():
                   btn = self.mainMenu.findPressed(mouseX,mouseY)
                
                   if btn != None:
+                     print btn.label
                      if btn.label == 'exit':
                         self.exit()
+                     elif btn.label == 'portfolio':
+                        self.currentGUI   = PortfolioGUI()
+                        self.currentState = self.STATE_GUI_PORTFOLIO
+                     elif btn.label == 'opponents':
+                        self.currentGUI = OpponentsGUI()
+                        self.currentState = self.STATE_GUI_OPPONENTS
+                     elif btn.label == 'market':
+                        self.currentGUI = MarketGUI()
+                        self.currentState = self.STATE_GUI_MARKET
                   
                   self.mainMenu.close()
                else:
                   self.mainMenu.open()
-         
+            
+            elif (self.currentState == self.STATE_GUI_PORTFOLIO or
+                  self.currentState == self.STATE_GUI_MARKET    or
+                  self.currentState == self.STATE_GUI_OPPONENTS
+                 ):
+                 
+                 btn = self.currentGUI.findPressed(mouseX,mouseY)
+               
+                 if btn != None:
+                    if btn.label == 'closeGUI':
+                        self.currentGUI   = None
+                        self.currentState = self.STATE_GAME_MODE
+            
             elif self.currentMap.blockingLayer.content2D[(mouseY+self.camera[1])/32][(mouseX+self.camera[0])/32] == None:
                mc = self.currentMap.mainChar
                mc.startpoint = ((mc.x)/32,(mc.y)/32)
@@ -197,18 +222,6 @@ class Main():
       
          elif event.type == QUIT:
             self.exit()
-         
-         elif event.type == pygame.KEYDOWN:
-            if   event.key == K_k:
-               print 'k!'
-            elif event.key == pygame.K_DOWN:
-               print 'down'
-            elif event.key == pygame.K_RIGHT:
-               print 'right'
-            elif event.key == pygame.K_LEFT:
-               print 'left'
-         elif event.type == pygame.KEYUP:
-            print 'up'
 
       self.camera[0] = self.currentMap.mainChar.x + 16     - (self.widthInTiles / 2)  * 32 - 32
       self.camera[1] = self.currentMap.mainChar.y + 33 +16 - (self.heightInTiles / 2) * 32 - 64
@@ -288,14 +301,14 @@ class Main():
          else:
             self.currentMap.destroy()
             self.currentMap = TownMap()
+            from gamemodels.models import Investor
             self.currentMap.injectCharacters(Investor.objects.all())
             self.currentMap.mainChar.x = self.mainCharPosBackup[0]
             self.currentMap.mainChar.y = self.mainCharPosBackup[1] + 32 + 16
       
          self.screen.fill((0, 0, 0))
          pygame.time.delay(200)
-         
-   
+      
       # Draw the main menu
       mainMenuImg = loadImageSize(self.mainMenu.sheet,
                                   0,
@@ -304,6 +317,26 @@ class Main():
                                   self.mainMenu.height
                                  )
       self.screen.blit(mainMenuImg, (10, 10))
+      
+      if self.currentGUI != None:
+      # Draw the main menu
+         startScreenImg = loadImageSize(self.startScreen.sheet,
+                                       0,
+                                       0,
+                                       self.startScreen.width,
+                                       self.startScreen.height
+                                       )
+         self.screen.blit(startScreenImg, (167, 8))
+      
+      
+         interfacesImg = loadImageSize(self.currentGUI.sheet,
+                                       0,
+                                       0,
+                                       self.currentGUI.width,
+                                       self.currentGUI.height
+                                       )
+         self.screen.blit(interfacesImg, (self.currentGUI.x, self.currentGUI.y))
+      
    
    def mainLoop(self):
    
@@ -314,13 +347,17 @@ class Main():
              self.currentState == self.STATE_CHARACTER_LOADING
             ):
             self.renderStartScreen()
-         elif self.currentState == self.STATE_GAME_MODE:
+         elif (self.currentState == self.STATE_GAME_MODE or
+               self.currentState == self.STATE_GUI_PORTFOLIO or
+               self.currentState == self.STATE_GUI_OPPONENTS or
+               self.currentState == self.STATE_GUI_MARKET
+            ):
             self.renderMap()
          else:
             print 'ERROR: Main class: In an Unsupported State!'
          
          pygame.display.flip()
-         self.clock.tick(25)
+         self.clock.tick(60)
 
 if __name__ == '__main__':
    main = Main()

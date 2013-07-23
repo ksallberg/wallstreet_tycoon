@@ -33,4 +33,4 @@ def createNewFile():
    createSettingsFile(currTime)
    
 # first thing to do
-createNewFile()
+# createNewFile()
