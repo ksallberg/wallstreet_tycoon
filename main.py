@@ -148,8 +148,15 @@ class Main():
       (xdiff,ydiff) = (mouseX%32,mouseY%32)
    
       for event in pygame.event.get():
-         if   event.type == MOUSEBUTTONDOWN:
          
+         if     event.type == MOUSEBUTTONUP:
+            if self.currentGUI != None:
+               self.currentGUI.readEvent(event)
+            
+         elif   event.type == MOUSEBUTTONDOWN:
+            if self.currentGUI != None:
+               self.currentGUI.readEvent(event)
+            
             # if the main menu is used
             if (mouseX >= self.mainMenu.x and mouseX <= self.mainMenu.x + self.mainMenu.width and
                 mouseY >= self.mainMenu.y and mouseY <= self.mainMenu.y + self.mainMenu.height
@@ -287,13 +294,16 @@ class Main():
       # Draw the main menu
       self.screen.blit(self.mainMenu.image, (10, 10))
       
+      
+      
       if self.currentGUI != None:
       # Draw the main menu
          self.screen.blit(self.startScreen.image, (167, 8))
       
          self.screen.blit(self.currentGUI.image, (self.currentGUI.x, self.currentGUI.y))
       
-   
+         self.currentGUI.drawExtra(self.screen)
+         
    def mainLoop(self):
    
       while self.gameRunning:

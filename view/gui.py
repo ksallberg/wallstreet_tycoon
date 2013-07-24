@@ -3,6 +3,7 @@ import pygame
 import math
 from pygame                     import *
 from utils.loading              import loadImageSize
+from view.scrollbar             import ScrollBar
 
 class Button():
    x      = 3
@@ -31,6 +32,9 @@ class AbstractGUI(Button):
              y >= button.y and y <= button.y + button.height):
              return button
       return None
+      
+   def readEvent(self,event):
+      print 'readEvent'
 
 class StartScreen(AbstractGUI):
    
@@ -457,8 +461,12 @@ class MarketGUI(AbstractGUI):
    x         = 375
    y         = 28
    sheet     = pygame.image.load(os.path.join('resources','marketGUI.png'))
+   scrollbar = ScrollBar()
    
    def __init__(self):
+      
+      self.scrollbar.x = 669
+      self.scrollbar.y = 119
       
       self.image = loadImageSize(self.sheet,
                                  0,
@@ -474,6 +482,12 @@ class MarketGUI(AbstractGUI):
       closeBtn.height = 60
       closeBtn.label  = 'closeGUI'
       self.buttons.append(closeBtn)
+      
+   def readEvent(self,event):
+      self.scrollbar.readEvent(event)
+      
+   def drawExtra(self,screen):
+      self.scrollbar.blit(screen)
       
 class PortfolioGUI(AbstractGUI):
    
@@ -482,8 +496,12 @@ class PortfolioGUI(AbstractGUI):
    x         = 375
    y         = 28
    sheet     = pygame.image.load(os.path.join('resources','portfolioGUI.png'))
+   scrollbar = ScrollBar()
    
    def __init__(self):
+      
+      self.scrollbar.x = 669
+      self.scrollbar.y = 119
       
       self.image = loadImageSize(self.sheet,
                                  0,
@@ -499,6 +517,12 @@ class PortfolioGUI(AbstractGUI):
       closeBtn.height = 60
       closeBtn.label  = 'closeGUI'
       self.buttons.append(closeBtn)
+      
+   def readEvent(self,event):
+      self.scrollbar.readEvent(event)
+      
+   def drawExtra(self,screen):
+      self.scrollbar.blit(screen)
       
 class OpponentsGUI(AbstractGUI):
    
@@ -507,8 +531,12 @@ class OpponentsGUI(AbstractGUI):
    x         = 375
    y         = 28
    sheet     = pygame.image.load(os.path.join('resources','opponentsGUI.png'))
+   scrollbar = ScrollBar()
    
    def __init__(self):
+      
+      self.scrollbar.x = 669
+      self.scrollbar.y = 119
       
       self.image = loadImageSize(self.sheet,
                                  0,
@@ -524,3 +552,9 @@ class OpponentsGUI(AbstractGUI):
       closeBtn.height = 60
       closeBtn.label  = 'closeGUI'
       self.buttons.append(closeBtn)
+      
+   def readEvent(self,event):
+      self.scrollbar.readEvent(event)
+      
+   def drawExtra(self,screen):
+      self.scrollbar.blit(screen)

@@ -8,7 +8,7 @@ class ScrollBar:
    sheet         = pygame.image.load(os.path.join('resources','scrollDragger.png'))
    image         = None
    width         = 32
-   maxHeight     = 300
+   maxHeight     = 384
    draggerHeight = 36
    y             = 0
    x             = 0
@@ -61,12 +61,5 @@ class ScrollBar:
             self.draggerY = 0
          
       self.percentage = float(float(self.draggerY) / (self.maxHeight-self.draggerHeight))
-      
-      print self.percentage
-      
-      # draw background for the frame
-      s = pygame.Surface((32,self.maxHeight))
-      s.fill((34, 16, 94, 10))
-      screen.blit(s, (self.x,self.y))
       
       screen.blit(self.image, (self.draggerX+self.x, self.draggerY+self.y))
