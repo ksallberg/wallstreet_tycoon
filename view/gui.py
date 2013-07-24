@@ -1,13 +1,8 @@
 import os
-from pygame import *
 import pygame
-
-def loadImageSize(sheet, x, y, w, h):
-   rect = Rect((x, y, w, h))
-   image = Surface(rect.size, SRCALPHA)
-   image.blit(sheet, (0, 0), rect)
-   image.set_colorkey(-1, RLEACCEL)
-   return image
+import math
+from pygame                     import *
+from utils.loading              import loadImageSize
 
 class Button():
    x      = 3
@@ -21,6 +16,7 @@ class AbstractGUI(Button):
    buttons = []
    
    sheet  = ''
+   image  = None
    
    def __init__(self):
       self.buttons = []
@@ -41,6 +37,14 @@ class StartScreen(AbstractGUI):
    width     = 600
    height    = 600
    sheet     = pygame.image.load(os.path.join('resources','menuFrame.png'))
+   
+   def __init__(self):
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
 
 class StartMainMenu(AbstractGUI):
    
@@ -52,6 +56,14 @@ class StartMainMenu(AbstractGUI):
    
    def __init__(self):
       AbstractGUI.__init__(self)
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
+      
       loadCharacter        = Button()
       loadCharacter.x      = 360
       loadCharacter.y      = 160
@@ -97,8 +109,25 @@ class CharacterLoading(AbstractGUI):
    sheet             = pygame.image.load(os.path.join('resources','loadCharacter.png'))
    selectorSheet     = pygame.image.load(os.path.join('resources','selector.png'))
    
+   selectorImage     = None
+   
    def __init__(self):
       AbstractGUI.__init__(self)
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
+                                
+      self.selectorImage = loadImageSize(self.selectorSheet,
+                                         0,
+                                         0,
+                                         24,
+                                         25
+                                        )
+      
       self.saveFiles = []    
       backBtn        = Button()
       backBtn.x      = 271
@@ -182,13 +211,7 @@ class CharacterLoading(AbstractGUI):
          screen.blit(label,(262,130+i*70))
          
       if self.currentSelected != None:
-         interfacesImg = loadImageSize(self.selectorSheet,
-                                    0,
-                                    0,
-                                    24,
-                                    25
-                                   )
-         screen.blit(interfacesImg, (688, 128 + self.currentSelected*71))
+         screen.blit(self.selectorImage, (688, 128 + self.currentSelected*71))
    
    def setSelector(self,number):
       self.currentSelected = int(number[7])-1 #take the number from the name and subtract 1 to make it an index
@@ -214,56 +237,30 @@ class CharacterCreation(AbstractGUI):
    selectorSheet     = pygame.image.load(os.path.join('resources','selector.png'))
    selectorPos       = (302,330)
    
+   selectorImage     = None
+   
    defaultName       = 'Player'
    name              = ''
    character         = char1Name
    
-   def addNameChar(self,char):
-      
-      if len(char) == 1 or char == 'backspace': # only count chars of len1 and backspace
-         if char == 'backspace':
-            self.name = self.name[:len(self.name)-1]
-         elif len(self.name) < 16:
-            self.name += str(char)
-   
-   def drawExtras(self,screen,input):
-      
-      interfacesImg = loadImageSize(self.selectorSheet,
-                                    0,
-                                    0,
-                                    24,
-                                    25
-                                   )
-      screen.blit(interfacesImg, (self.selectorPos[0], self.selectorPos[1]))
-      
-      font  = pygame.font.SysFont('monospace',20)
-      label = font.render(self.name, 1, (255,255,255))
-      screen.blit(label,(262,164))
-   
-   def setSelector(self,character):
-      
-      self.character = character
-      
-      if character == self.char1Name:
-         self.selectorPos = (302,330)
-      elif character == self.char2Name:
-         self.selectorPos = (399,330)
-      elif character == self.char3Name:
-         self.selectorPos = (495,330)
-      elif character == self.char4Name:
-         self.selectorPos = (591,330)
-      elif character == self.char5Name:
-         self.selectorPos = (302,425)
-      elif character == self.char6Name:
-         self.selectorPos = (399,425)
-      elif character == self.char7Name:
-         self.selectorPos = (495,425)
-      elif character == self.char8Name:
-         self.selectorPos = (591,425)
-         
    def __init__(self):
       
       AbstractGUI.__init__(self)
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
+                                
+      self.selectorImage = loadImageSize(self.selectorSheet,
+                                         0,
+                                         0,
+                                         24,
+                                         25
+                                        )
+      
       menuBtn        = Button()
       menuBtn.x      = 270
       menuBtn.y      = 479
@@ -343,7 +340,44 @@ class CharacterCreation(AbstractGUI):
       char8.height = 70
       char8.label  = self.char8Name
       self.buttons.append(char8)
-
+      
+   def addNameChar(self,char):
+      
+      if len(char) == 1 or char == 'backspace': # only count chars of len1 and backspace
+         if char == 'backspace':
+            self.name = self.name[:len(self.name)-1]
+         elif len(self.name) < 16:
+            self.name += str(char)
+   
+   def drawExtras(self,screen,input):
+      
+      screen.blit(self.selectorImage, (self.selectorPos[0], self.selectorPos[1]))
+      
+      font  = pygame.font.SysFont('monospace',20)
+      label = font.render(self.name, 1, (255,255,255))
+      screen.blit(label,(262,164))
+   
+   def setSelector(self,character):
+      
+      self.character = character
+      
+      if character == self.char1Name:
+         self.selectorPos = (302,330)
+      elif character == self.char2Name:
+         self.selectorPos = (399,330)
+      elif character == self.char3Name:
+         self.selectorPos = (495,330)
+      elif character == self.char4Name:
+         self.selectorPos = (591,330)
+      elif character == self.char5Name:
+         self.selectorPos = (302,425)
+      elif character == self.char6Name:
+         self.selectorPos = (399,425)
+      elif character == self.char7Name:
+         self.selectorPos = (495,425)
+      elif character == self.char8Name:
+         self.selectorPos = (591,425)
+   
 class MainMenu(AbstractGUI):
    
    maxHeight = 208
@@ -352,9 +386,18 @@ class MainMenu(AbstractGUI):
    height    = minHeight
    isOpen    = False
    sheet     = pygame.image.load(os.path.join('resources','menu.png'))
+   image     = None
    
    def __init__(self):
       AbstractGUI.__init__(self)
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
+      
       portfolioBtn        = Button()
       portfolioBtn.x      = 0
       portfolioBtn.y      = 44
@@ -389,10 +432,22 @@ class MainMenu(AbstractGUI):
       
    def open(self):
       self.height = self.maxHeight
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
       self.isOpen = True
       
    def close(self):
       self.height = self.minHeight
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
       self.isOpen = False
       
 class MarketGUI(AbstractGUI):
@@ -404,6 +459,13 @@ class MarketGUI(AbstractGUI):
    sheet     = pygame.image.load(os.path.join('resources','marketGUI.png'))
    
    def __init__(self):
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
       
       closeBtn        = Button()
       closeBtn.x      = 379
@@ -423,6 +485,13 @@ class PortfolioGUI(AbstractGUI):
    
    def __init__(self):
       
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
+      
       closeBtn        = Button()
       closeBtn.x      = 379
       closeBtn.y      = 483
@@ -440,6 +509,13 @@ class OpponentsGUI(AbstractGUI):
    sheet     = pygame.image.load(os.path.join('resources','opponentsGUI.png'))
    
    def __init__(self):
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
       
       closeBtn        = Button()
       closeBtn.x      = 379

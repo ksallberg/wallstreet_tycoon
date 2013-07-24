@@ -16,20 +16,7 @@ from view.map                   import *
 from logic.chance               import applyChance
 from view.gui                   import *
 import random
-
-def loadImage(sheet, indexX, indexY):
-   rect = Rect((indexX,indexY, 32, 48))
-   image = Surface(rect.size, SRCALPHA)
-   image.blit(sheet, (0, 0), rect)
-   image.set_colorkey(-1, RLEACCEL)
-   return image
-
-def loadImageSize(sheet, x, y, w, h):
-   rect = Rect((x, y, w, h))
-   image = Surface(rect.size, SRCALPHA)
-   image.blit(sheet, (0, 0), rect)
-   image.set_colorkey(-1, RLEACCEL)
-   return image
+from utils.loading              import loadImage, loadImageSize
 
 class Main():
    
@@ -94,21 +81,9 @@ class Main():
       (xdiff,ydiff) = (mouseX%32,mouseY%32)
       
       # Draw the main menu
-      startScreenImg = loadImageSize(self.startScreen.sheet,
-                                     0,
-                                     0,
-                                     self.startScreen.width,
-                                     self.startScreen.height
-                                    )
-      self.screen.blit(startScreenImg, (167, 8))
-         
-      interfacesImg = loadImageSize(self.currentGUI.sheet,
-                                    0,
-                                    0,
-                                    self.currentGUI.width,
-                                    self.currentGUI.height
-                                   )
-      self.screen.blit(interfacesImg, (self.currentGUI.x, self.currentGUI.y))
+      self.screen.blit(self.startScreen.image, (167, 8))
+      
+      self.screen.blit(self.currentGUI.image, (self.currentGUI.x, self.currentGUI.y))
       
       if self.currentState == self.STATE_CHARACTER_CREATION:
          self.currentGUI.drawExtras(self.screen,None)
@@ -310,32 +285,13 @@ class Main():
          pygame.time.delay(200)
       
       # Draw the main menu
-      mainMenuImg = loadImageSize(self.mainMenu.sheet,
-                                  0,
-                                  0,
-                                  self.mainMenu.width,
-                                  self.mainMenu.height
-                                 )
-      self.screen.blit(mainMenuImg, (10, 10))
+      self.screen.blit(self.mainMenu.image, (10, 10))
       
       if self.currentGUI != None:
       # Draw the main menu
-         startScreenImg = loadImageSize(self.startScreen.sheet,
-                                       0,
-                                       0,
-                                       self.startScreen.width,
-                                       self.startScreen.height
-                                       )
-         self.screen.blit(startScreenImg, (167, 8))
+         self.screen.blit(self.startScreen.image, (167, 8))
       
-      
-         interfacesImg = loadImageSize(self.currentGUI.sheet,
-                                       0,
-                                       0,
-                                       self.currentGUI.width,
-                                       self.currentGUI.height
-                                       )
-         self.screen.blit(interfacesImg, (self.currentGUI.x, self.currentGUI.y))
+         self.screen.blit(self.currentGUI.image, (self.currentGUI.x, self.currentGUI.y))
       
    
    def mainLoop(self):
