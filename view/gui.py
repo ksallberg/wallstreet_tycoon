@@ -207,7 +207,7 @@ class CharacterLoading(AbstractGUI):
    def drawExtras(self,screen,input):
       for i in range(0,len(self.saveFiles)):
          font  = pygame.font.SysFont('monospace',20)
-         label = font.render(self.saveFiles[i], 1, (255,255,255))
+         label = font.render(self.saveFiles[i], 1, (78,49,11))
          screen.blit(label,(262,130+i*70))
          
       if self.currentSelected != None:
@@ -354,7 +354,7 @@ class CharacterCreation(AbstractGUI):
       screen.blit(self.selectorImage, (self.selectorPos[0], self.selectorPos[1]))
       
       font  = pygame.font.SysFont('monospace',20)
-      label = font.render(self.name, 1, (255,255,255))
+      label = font.render(self.name, 1, (78,49,11))
       screen.blit(label,(262,164))
    
    def setSelector(self,character):

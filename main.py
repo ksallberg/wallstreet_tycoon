@@ -73,9 +73,9 @@ class Main():
       self.screen.fill((0,0,0))
       
       # draw background for the frame
-      s = pygame.Surface((560,560))
-      s.fill((34, 16, 94))
-      self.screen.blit(s, (190,30))
+      #s = pygame.Surface((560,560))
+      #s.fill((34, 16, 94))
+      #self.screen.blit(s, (190,30))
       
       (mouseX,mouseY) = pygame.mouse.get_pos()
       (xdiff,ydiff) = (mouseX%32,mouseY%32)
@@ -97,7 +97,7 @@ class Main():
             
             # some sort of event handling for the start screen
             if btn != None:
-               print btn.label
+               
                if btn.label == 'createChar':
                   self.currentGUI   = CharacterCreation()
                   self.currentState = self.STATE_CHARACTER_CREATION
@@ -159,7 +159,7 @@ class Main():
                   btn = self.mainMenu.findPressed(mouseX,mouseY)
                
                   if btn != None:
-                     print btn.label
+                     
                      if btn.label == 'exit':
                         self.exit()
                      elif btn.label == 'portfolio':
