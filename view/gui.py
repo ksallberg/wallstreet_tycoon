@@ -4,6 +4,8 @@ import math
 from pygame                     import *
 from utils.loading              import loadImageSize
 from view.scrollbar             import ScrollBar
+from gamemodels.models          import Company, Stock, Investor
+from logic.portfolioManipulation import *
 
 class Button():
    x      = 3
@@ -535,6 +537,11 @@ class OpponentsGUI(AbstractGUI):
    scrolledContentYTop = 119
    scrolledContentY    = 0
    
+   guiRowDist          = 23
+   roundCounter        = 0
+   
+   cacheList           = None #used to optimize drawing of texts
+   
    def __init__(self):
       
       self.scrollbar.x = 669
@@ -555,16 +562,74 @@ class OpponentsGUI(AbstractGUI):
       closeBtn.label  = 'closeGUI'
       self.buttons.append(closeBtn)
       
+      investors = Investor.objects.all()
+      self.cacheList = pygame.Surface((500,len(investors)*self.guiRowDist+self.guiRowDist), pygame.SRCALPHA, 32)
+      self.cacheList = self.cacheList.convert_alpha()
+      
    def readEvent(self,event):
       self.scrollbar.readEvent(event)
-      
-      
+   
+   # this function is optimized to only redraw the
+   # texts each 100:th round
    def drawExtra(self,screen):
+      
       self.scrollbar.blit(screen)
       
-      self.scrolledContentY = self.scrolledContentYTop - 100 * self.scrollbar.percentage
+      investors = Investor.objects.all()
+      self.scrolledContentY = self.scrolledContentYTop - ((len(investors)*self.guiRowDist)+self.guiRowDist) * self.scrollbar.percentage + 336 * self.scrollbar.percentage
+
+      if self.roundCounter == 0:
       
-      s = pygame.Surface((100,100))
-      s.set_alpha(80)
-      s.fill((255,255,0))
-      screen.blit(s, (227,self.scrolledContentYTop),Rect(0,self.scrolledContentYTop-self.scrolledContentY,415,336))
+         h = len(investors)*self.guiRowDist
+      
+         s = pygame.Surface((500,len(investors)*self.guiRowDist+self.guiRowDist), pygame.SRCALPHA, 32)
+         s = s.convert_alpha()
+      
+         font  = pygame.font.SysFont('monospace',16)
+         label = font.render('Investor:', 1, (255,255,255))
+         s.blit(label,(0,0))
+      
+         font  = pygame.font.SysFont('monospace',16)
+         label = font.render('Cash:', 1, (255,255,255))
+         s.blit(label,(200,0))
+      
+         font  = pygame.font.SysFont('monospace',16)
+         label = font.render('Stock:', 1, (255,255,255))
+         s.blit(label,(275,0))
+      
+         font  = pygame.font.SysFont('monospace',16)
+         label = font.render('Total:', 1, (255,255,255))
+         s.blit(label,(350,0))
+      
+         i = 1
+         for investor in investors:
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render(investor.name, 1, (255,255,255))
+            s.blit(label,(0,i*self.guiRowDist))
+         
+            investorStock = calcCurrentPortfolioWorth(investor)
+            totalCapital  = investorStock + investor.cash
+         
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render(str(investor.cash), 1, (255,255,255))
+            s.blit(label,(200,i*self.guiRowDist))
+         
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render(str(investorStock), 1, (255,255,255))
+            s.blit(label,(275,i*self.guiRowDist))
+         
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render(str(totalCapital), 1, (255,255,255))
+            s.blit(label,(350,i*self.guiRowDist))
+            i += 1
+      
+         self.cacheList.fill(0)
+         self.cacheList.blit(s,(0,0))
+      
+      screen.blit(self.cacheList, (227,self.scrolledContentYTop),Rect(0,self.scrolledContentYTop-self.scrolledContentY,415,336))
+      
+      #increment roundCounter for next round
+      if self.roundCounter < 100:
+         self.roundCounter += 1
+      else:
+         self.roundCounter = 0

@@ -99,8 +99,8 @@ def handleHour():
                sellStock(investor,comp,entry[1])
                
       # finally, just to debug, print the person and his/her current cash:
-      print (investor.name + ", \t\tcash: " + str(investor.cash) + ", \t\tin stock: " + str(calcCurrentPortfolioWorth(investor))
-                           + ", \t\ttotal: " + str(investor.cash+calcCurrentPortfolioWorth(investor)))
+      #print (investor.name + ", \t\tcash: " + str(investor.cash) + ", \t\tin stock: " + str(calcCurrentPortfolioWorth(investor))
+      #                     + ", \t\ttotal: " + str(investor.cash+calcCurrentPortfolioWorth(investor)))
    
 def debugPrintCompany():
    

@@ -17,7 +17,6 @@ from logic.chance               import applyChance
 from view.gui                   import *
 import random
 from utils.loading              import loadImage, loadImageSize
-
 from view.scrollbar             import ScrollBar
 
 class Test():
