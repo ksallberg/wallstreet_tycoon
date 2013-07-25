@@ -6,6 +6,7 @@ from utils.loading              import loadImageSize
 from view.scrollbar             import ScrollBar
 from gamemodels.models          import Company, Stock, Investor
 from logic.portfolioManipulation import *
+from django.db.models            import Max
 
 class Button():
    x      = 3
@@ -458,13 +459,17 @@ class MainMenu(AbstractGUI):
       
 class MarketGUI(AbstractGUI):
    
-   width     = 326
-   height    = 517
-   x         = 375
-   y         = 28
-   sheet     = pygame.image.load(os.path.join('resources','marketGUI.png'))
-   scrollbar = ScrollBar()
+   width               = 326
+   height              = 517
+   x                   = 375
+   y                   = 28
+   sheet               = pygame.image.load(os.path.join('resources','marketGUI.png'))
+   scrollbar           = ScrollBar()
+   scrolledContentYTop = 119
+   scrolledContentY    = 0
    
+   guiRowDist          = 23
+   roundCounter        = 0
    def __init__(self):
       
       self.scrollbar.x = 669
@@ -485,11 +490,61 @@ class MarketGUI(AbstractGUI):
       closeBtn.label  = 'closeGUI'
       self.buttons.append(closeBtn)
       
+      companies = Company.objects.all()
+      self.cacheList = pygame.Surface((500,len(companies)*(self.guiRowDist*6)-self.guiRowDist), pygame.SRCALPHA, 32)
+      self.cacheList = self.cacheList.convert_alpha()
+      
    def readEvent(self,event):
       self.scrollbar.readEvent(event)
       
    def drawExtra(self,screen):
+      
       self.scrollbar.blit(screen)
+      
+      companies = Company.objects.all()
+      self.scrolledContentY = self.scrolledContentYTop - ((len(companies)*(self.guiRowDist*6))-self.guiRowDist) * self.scrollbar.percentage + 336 * self.scrollbar.percentage
+      
+      if self.roundCounter == 0:
+         
+         s = pygame.Surface((500,len(companies)*(self.guiRowDist*6)), pygame.SRCALPHA, 32)
+         s = self.cacheList.convert_alpha()
+         
+         i = 0
+         for company in companies:
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render(company.name, 1, (255,255,255))
+            s.blit(label,(0,i*self.guiRowDist))
+         
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render('cash:'+str(company.cash), 1, (255,255,255))
+            s.blit(label,(0,(i+1)*self.guiRowDist))
+         
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render('ticker:'+company.ticker, 1, (255,255,255))
+            s.blit(label,(0,(i+2)*self.guiRowDist))
+         
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render('number of shares:'+str(company.shares), 1, (255,255,255))
+            s.blit(label,(0,(i+3)*self.guiRowDist))
+         
+            lastTime = company.priceHistory.all().aggregate(Max('time'))
+            currentPrice = company.priceHistory.get(time=lastTime['time__max'])
+         
+            font  = pygame.font.SysFont('monospace',16)
+            label = font.render('price:'+str(currentPrice), 1, (255,255,255))
+            s.blit(label,(0,(i+4)*self.guiRowDist))
+            i += 6
+         
+         self.cacheList.fill(0)
+         self.cacheList.blit(s,(0,0))
+         
+      screen.blit(self.cacheList, (227,self.scrolledContentYTop),Rect(0,self.scrolledContentYTop-self.scrolledContentY,415,336))
+      
+      #increment roundCounter for next round
+      if self.roundCounter < 100:
+         self.roundCounter += 1
+      else:
+         self.roundCounter = 0
       
 class PortfolioGUI(AbstractGUI):
    
