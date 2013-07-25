@@ -464,6 +464,9 @@ class MarketGUI(AbstractGUI):
    x                   = 375
    y                   = 28
    sheet               = pygame.image.load(os.path.join('resources','marketGUI.png'))
+   buyButtonSheet      = pygame.image.load(os.path.join('resources','buyButton.png'))
+   buyButtonImage      = None
+   
    scrollbar           = ScrollBar()
    scrolledContentYTop = 119
    scrolledContentY    = 0
@@ -481,6 +484,13 @@ class MarketGUI(AbstractGUI):
                                  self.width,
                                  self.height
                                 )
+      
+      self.buyButtonImage = loadImageSize(self.buyButtonSheet,
+                                          0,
+                                          0,
+                                          127,
+                                          42
+                                         )
       
       closeBtn        = Button()
       closeBtn.x      = 379
@@ -511,6 +521,9 @@ class MarketGUI(AbstractGUI):
          
          i = 0
          for company in companies:
+            
+            s.blit(self.buyButtonImage,(275,i*self.guiRowDist+35))
+            
             font  = pygame.font.SysFont('monospace',16)
             label = font.render(company.name, 1, (255,255,255))
             s.blit(label,(0,i*self.guiRowDist))
