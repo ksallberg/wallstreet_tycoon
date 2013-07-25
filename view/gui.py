@@ -507,7 +507,7 @@ class MarketGUI(AbstractGUI):
       if self.roundCounter == 0:
          
          s = pygame.Surface((500,len(companies)*(self.guiRowDist*6)), pygame.SRCALPHA, 32)
-         s = self.cacheList.convert_alpha()
+         s = s.convert_alpha()
          
          i = 0
          for company in companies:
