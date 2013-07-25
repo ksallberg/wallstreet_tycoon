@@ -21,8 +21,6 @@ class ScrollBar:
    
    def __init__(self):
       
-      self.dwiheifwhefiuheiufheiuf = 23
-      
       self.image = loadImageSize(self.sheet,
                                  0,
                                  0,
@@ -31,8 +29,6 @@ class ScrollBar:
                                 )
                                 
    def readEvent(self,event):
-      
-      #(mouseX,mouseY) = pygame.mouse.get_pos()
       
       #if mouse is down and over the dragger:
       if event.type == MOUSEBUTTONDOWN:

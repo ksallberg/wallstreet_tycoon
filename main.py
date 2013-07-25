@@ -236,11 +236,12 @@ class Main():
          mouseColor = (0,255,255)
       else:
          mouseColor = (255,0,0)
-
-      s = pygame.Surface((32,32))
-      s.set_alpha(80)
-      s.fill(mouseColor)
-      self.screen.blit(s, (mouseX-xdiff,mouseY-ydiff))
+      
+      if self.currentGUI == None:
+         s = pygame.Surface((32,32))
+         s.set_alpha(80)
+         s.fill(mouseColor)
+         self.screen.blit(s, (mouseX-xdiff,mouseY-ydiff))
 
       # draw characters
       for ch in self.currentMap.characters:

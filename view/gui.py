@@ -526,12 +526,14 @@ class PortfolioGUI(AbstractGUI):
       
 class OpponentsGUI(AbstractGUI):
    
-   width     = 326
-   height    = 517
-   x         = 375
-   y         = 28
-   sheet     = pygame.image.load(os.path.join('resources','opponentsGUI.png'))
-   scrollbar = ScrollBar()
+   width               = 326
+   height              = 517
+   x                   = 375
+   y                   = 28
+   sheet               = pygame.image.load(os.path.join('resources','opponentsGUI.png'))
+   scrollbar           = ScrollBar()
+   scrolledContentYTop = 119
+   scrolledContentY    = 0
    
    def __init__(self):
       
@@ -556,5 +558,13 @@ class OpponentsGUI(AbstractGUI):
    def readEvent(self,event):
       self.scrollbar.readEvent(event)
       
+      
    def drawExtra(self,screen):
       self.scrollbar.blit(screen)
+      
+      self.scrolledContentY = self.scrolledContentYTop - 100 * self.scrollbar.percentage
+      
+      s = pygame.Surface((100,100))
+      s.set_alpha(80)
+      s.fill((255,255,0))
+      screen.blit(s, (227,self.scrolledContentYTop),Rect(0,self.scrolledContentYTop-self.scrolledContentY,415,336))
