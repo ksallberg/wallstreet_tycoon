@@ -73,26 +73,9 @@ class MarketGUI(AbstractGUI):
          elif x >= 466 and x <= 466+127 and y >= 332 and y <= 332+41:
             
             #register the buy in the model
-            
             player                   = Investor.objects.get(type='player')
-            
-#            portfolio                = getCurrentPortfolio(player)
-            
-            
-            
             company                  = Company.objects.get(id=int(self.buttonPressed+1))
-            
-            print company
-            
             buyStock(player,company,int(self.buyAmount))
-            
-            # add the stock
- #           portfolioEntity          = Portfolio()
- #           portfolioEntity.investor = player
- #           portfolioEntity.amount   = int(buyAmount)
- #           portfolioEntity.company  = company
- #           portfolioEntity.save()
-            
             self.buyStockOpen = False
             
       else:
