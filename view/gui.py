@@ -51,6 +51,56 @@ class StartScreen(AbstractGUI):
                                  self.height
                                 )
 
+class BuyStock(AbstractGUI):
+   
+   x         = 310
+   y         = 216
+   width     = 310
+   height    = 182
+   sheet     = pygame.image.load(os.path.join('resources','stockBuy.png'))
+   
+   def __init__(self):
+      AbstractGUI.__init__(self)
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
+      
+      loadCharacter        = Button()
+      loadCharacter.x      = 360
+      loadCharacter.y      = 160
+      loadCharacter.width  = 228
+      loadCharacter.height = 80
+      loadCharacter.label  = 'loadChar'
+      self.buttons.append(loadCharacter)
+      
+      createCharacter        = Button()
+      createCharacter.x      = 360
+      createCharacter.y      = 252
+      createCharacter.width  = 228
+      createCharacter.height = 80
+      createCharacter.label  = 'createChar'
+      self.buttons.append(createCharacter)
+      
+      instructions        = Button()
+      instructions.x      = 360
+      instructions.y      = 355
+      instructions.width  = 228
+      instructions.height = 80
+      instructions.label  = 'instructions'
+      self.buttons.append(instructions)
+      
+      exit        = Button()
+      exit.x      = 360
+      exit.y      = 421
+      exit.width  = 228
+      exit.height = 80
+      exit.label  = 'exit'
+      self.buttons.append(exit)
+
 class StartMainMenu(AbstractGUI):
    
    x         = 355

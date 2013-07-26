@@ -46,7 +46,6 @@ class Main():
    currentGUI         = None
    gameRunning        = True
    startScreen        = StartScreen()
-   
 
    def __init__(self):
       
@@ -154,7 +153,11 @@ class Main():
          if     event.type == MOUSEBUTTONUP:
             if self.currentGUI != None:
                self.currentGUI.readEvent(event)
-            
+         
+         elif   event.type == KEYDOWN:
+            if self.currentGUI != None:
+               self.currentGUI.readEvent(event)
+         
          elif   event.type == MOUSEBUTTONDOWN:
             if self.currentGUI != None:
                self.currentGUI.readEvent(event)

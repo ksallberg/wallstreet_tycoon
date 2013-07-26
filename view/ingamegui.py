@@ -8,6 +8,7 @@ import math
 from pygame                     import *
 from utils.loading              import loadImageSize
 from view.scrollbar             import ScrollBar
+from math                       import fabs, floor
 
 class MarketGUI(AbstractGUI):
    
@@ -25,6 +26,11 @@ class MarketGUI(AbstractGUI):
    
    guiRowDist          = 23
    roundCounter        = 0
+   
+   buyStockGUI         = BuyStock()
+   buyStockOpen        = False
+   buyAmount           = ''
+   
    def __init__(self):
       
       self.scrollbar.x = 669
@@ -59,21 +65,45 @@ class MarketGUI(AbstractGUI):
    # override to find when the user has pressed buy
    def findPressed(self,x,y):
       
-      for button in self.buttons:
+      if self.buyStockOpen:
          
-         if (x >= 504 and x       <= 631 and
-             y + self.scrolledContentY <= 100
-            ):
-            print 'BUY BUTTON!'
+         if x >= 335 and x <= 335+127 and y >= 332 and y <= 332+41:
+            self.buyStockOpen = False
+         elif x >= 466 and x <= 466+127 and y >= 332 and y <= 332+41:
+            print 'buy'
          
-         if (x >= button.x and x <= button.x + button.width and
-             y >= button.y and y <= button.y + button.height):
-             return button
+      else:
+      
+         for button in self.buttons:
+         
+            if x >= 504 and x <= 631:
+               relativePosition = (y + (-self.scrolledContentY) + self.scrolledContentYTop - 155)%138 #the position in the entire Surface
+                                                                                  #self.scrolledContentY will be positive at first and then negative
+            
+               if relativePosition >= 0 and relativePosition <= 38:
+               
+                  #138 pixels between every button
+                  buttonPressed = floor(((-self.scrolledContentY)+y)/138)
+                  self.buyStockOpen = True
+                  self.buyAmount = '' # reset this pop up gui
+               
+            if (x >= button.x and x <= button.x + button.width and
+                y >= button.y and y <= button.y + button.height):
+                return button
          
       return None
    
    def readEvent(self,event):
       self.scrollbar.readEvent(event)
+      
+      if self.buyStockOpen:
+         
+         # This is listening to the text field
+         if event.type == pygame.KEYDOWN:
+            if pygame.key.name(event.key) == 'backspace':
+               self.buyAmount = self.buyAmount[:-1]
+            elif pygame.key.name(event.key) in ['1','2','3','4','5','6','7','8','9','0'] and len(self.buyAmount) < 5:
+               self.buyAmount += pygame.key.name(event.key)
       
    def drawExtra(self,screen):
       
@@ -121,6 +151,13 @@ class MarketGUI(AbstractGUI):
          
       screen.blit(self.cacheList, (227,self.scrolledContentYTop),Rect(0,self.scrolledContentYTop-self.scrolledContentY,415,336))
       
+      if self.buyStockOpen:
+         screen.blit(self.buyStockGUI.image,(self.buyStockGUI.x,self.buyStockGUI.y))
+         
+         font  = pygame.font.SysFont('monospace',20)
+         label = font.render(self.buyAmount, 1, (78,49,11))
+         screen.blit(label,(408,282))
+         
       #increment roundCounter for next round
       if self.roundCounter < 100:
          self.roundCounter += 1

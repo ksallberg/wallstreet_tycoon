@@ -61,7 +61,7 @@ def generateInvestorName(json,existingNames):
 def generateNewRound(companyNames,investorNames,playerInput):
    
    # Create random companies
-   for i in range(0,len(companyNames)-1):
+   for i in range(0,len(companyNames)): # TODO: Check if its correct ot not have len - 1
       
       st       = Stock()
       st.time  = 0
@@ -78,7 +78,7 @@ def generateNewRound(companyNames,investorNames,playerInput):
       newComp.priceHistory.add(st)
       
    # Create random investors
-   for i in range(0,len(investorNames)-1):
+   for i in range(0,len(investorNames)):
       
       inv        = Investor()
       inv.name   = investorNames[i].split(' ')[0][2:] + ' ' + investorNames[i].split(' ')[1] #remove m_ or f_ for sprite sex
