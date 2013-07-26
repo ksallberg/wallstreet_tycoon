@@ -62,7 +62,7 @@ class MarketGUI(AbstractGUI):
       for button in self.buttons:
          
          if (x >= 504 and x       <= 631 and
-             y + scrolledContentY <= 100
+             y + self.scrolledContentY <= 100
             ):
             print 'BUY BUTTON!'
          
