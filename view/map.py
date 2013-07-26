@@ -39,6 +39,24 @@ class AbstractMap():
       self.aStarMap      = []
       self.teleportTiles = []
       self.tag           = ''
+      
+   def mapPlayerToSprite(self,spriteName):
+      if   spriteName == 'char1':
+         return Character.type1
+      elif spriteName == 'char2':
+         return Character.type2
+      elif spriteName == 'char3':
+         return Character.type3
+      elif spriteName == 'char4':
+         return Character.type4
+      elif spriteName == 'char5':
+         return Character.type5
+      elif spriteName == 'char6':
+         return Character.type6
+      elif spriteName == 'char7':
+         return Character.type7
+      elif spriteName == 'char8':
+         return Character.type8
 
 class TownMap(AbstractMap):
    
@@ -58,9 +76,10 @@ class TownMap(AbstractMap):
       AbstractMap.__init__(self)
       self.tag = 'town'
       
-      self.teleportTiles = [(14,19),(29,21),(39,19),(60,19),(72,19),(84,19),(95,14),
-                            (10,49),(17,49),(35,49),(42,49),(56,49),(87,49),(96,82),
-                            (87,92),(80,84),(56,84),(42,84),(10,84)]
+      self.teleportTiles = [(14,19),(29,21),(39,19),(60,19),(72,19),
+                            (84,19),(95,14),(10,49),(17,49),(35,49),
+                            (42,49),(56,49),(87,49),(96,82),(87,92),
+                            (80,84),(56,84),(42,84),(10,84)]
       
       self.setWidthInTiles(100)
       self.setHeightInTiles(100)
@@ -80,24 +99,6 @@ class TownMap(AbstractMap):
                self.aStarMap.append(1)
             else:
                self.aStarMap.append(-1)
-   
-   def mapPlayerToSprite(self,spriteName):
-      if   spriteName == 'char1':
-         return Character.type1
-      elif spriteName == 'char2':
-         return Character.type2
-      elif spriteName == 'char3':
-         return Character.type3
-      elif spriteName == 'char4':
-         return Character.type4
-      elif spriteName == 'char5':
-         return Character.type5
-      elif spriteName == 'char6':
-         return Character.type6
-      elif spriteName == 'char7':
-         return Character.type7
-      elif spriteName == 'char8':
-         return Character.type8
    
    def injectCharacters(self,investors):
       
@@ -131,14 +132,6 @@ class HouseMap(AbstractMap):
       self.setWidthInTiles(29)
       self.setHeightInTiles(19)
       
-      char = Character()
-      char.x = 13*32+16
-      char.y = 17*32+16
-      char.startpoint = (3,10)
-      char.setType(char.type3)
-      self.characters.append(char)
-      self.mainChar = char
-      
       self.mapFile = tiledtmxloader.tmxreader.TileMapParser().parse_decode(os.path.join('resources','insidehouse.tmx'))
       self.resources.load(self.mapFile)
       self.spriteLayers = tiledtmxloader.helperspygame.get_layers_from_map(self.resources)
@@ -154,3 +147,12 @@ class HouseMap(AbstractMap):
                self.aStarMap.append(1)
             else:
                self.aStarMap.append(-1)
+               
+   def injectMainCharacter(self,investor):
+         char = Character()
+         char.x = 13*32+16
+         char.y = 17*32+16
+         char.startpoint = (3,10)
+         char.setType(self.mapPlayerToSprite(investor.sprite))
+         self.characters.append(char)
+         self.mainChar = char

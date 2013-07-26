@@ -285,6 +285,8 @@ class Main():
             self.mainCharPosBackup = (self.currentMap.mainChar.x,self.currentMap.mainChar.y)
             self.currentMap.destroy()
             self.currentMap = HouseMap()
+            from gamemodels.models import Investor
+            self.currentMap.injectMainCharacter(Investor.objects.get(type='player'))
          else:
             self.currentMap.destroy()
             self.currentMap = TownMap()
