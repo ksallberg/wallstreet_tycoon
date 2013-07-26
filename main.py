@@ -1,5 +1,6 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'djangosettings'
+from os.path import join
 import control.savesLookup
 from control.savesLookup        import findExistingRounds, createSettingsFile, createNewFile
 import view.character
@@ -116,7 +117,7 @@ class Main():
                elif btn.label == 'doLoad':
                   
                   if self.currentGUI.currentSelected != None:
-                     createSettingsFile('saves/'+self.currentGUI.wantedSaveName)
+                     createSettingsFile(join('saves',self.currentGUI.wantedSaveName))
 
                      from control.scheduledEvents    import modelInit
                      from gamemodels.models          import Investor

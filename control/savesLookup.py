@@ -29,7 +29,7 @@ def findExistingRounds():
           ]
 
 def createNewFile():
-   currTime = 'saves/'+strftime("%Y-%m-%d-%H-%M-%S", gmtime())+'.save'
+   currTime = join('saves',strftime("%Y-%m-%d-%H-%M-%S", gmtime())+'.save')
    createSettingsFile(currTime)
    
 # first thing to do
