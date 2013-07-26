@@ -14,7 +14,8 @@ import copy
 from pygame                     import *
 from view.map                   import *
 from logic.chance               import applyChance
-from view.gui                   import *
+from view.gui                   import StartScreen, StartMainMenu, CharacterLoading, CharacterCreation, MainMenu
+
 import random
 from utils.loading              import loadImage, loadImageSize
 
@@ -170,12 +171,15 @@ class Main():
                      if btn.label == 'exit':
                         self.exit()
                      elif btn.label == 'portfolio':
+                        from view.ingamegui import PortfolioGUI
                         self.currentGUI   = PortfolioGUI()
                         self.currentState = self.STATE_GUI_PORTFOLIO
                      elif btn.label == 'opponents':
+                        from view.ingamegui import OpponentsGUI
                         self.currentGUI = OpponentsGUI()
                         self.currentState = self.STATE_GUI_OPPONENTS
                      elif btn.label == 'market':
+                        from view.ingamegui import MarketGUI
                         self.currentGUI = MarketGUI()
                         self.currentState = self.STATE_GUI_MARKET
                   
