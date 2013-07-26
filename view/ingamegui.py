@@ -30,6 +30,7 @@ class MarketGUI(AbstractGUI):
    buyStockGUI         = BuyStock()
    buyStockOpen        = False
    buyAmount           = ''
+   buttonPressed       = 0
    
    def __init__(self):
       
@@ -70,8 +71,30 @@ class MarketGUI(AbstractGUI):
          if x >= 335 and x <= 335+127 and y >= 332 and y <= 332+41:
             self.buyStockOpen = False
          elif x >= 466 and x <= 466+127 and y >= 332 and y <= 332+41:
-            print 'buy'
-         
+            
+            #register the buy in the model
+            
+            player                   = Investor.objects.get(type='player')
+            
+#            portfolio                = getCurrentPortfolio(player)
+            
+            
+            
+            company                  = Company.objects.get(id=int(self.buttonPressed+1))
+            
+            print company
+            
+            buyStock(player,company,int(self.buyAmount))
+            
+            # add the stock
+ #           portfolioEntity          = Portfolio()
+ #           portfolioEntity.investor = player
+ #           portfolioEntity.amount   = int(buyAmount)
+ #           portfolioEntity.company  = company
+ #           portfolioEntity.save()
+            
+            self.buyStockOpen = False
+            
       else:
       
          for button in self.buttons:
@@ -83,7 +106,7 @@ class MarketGUI(AbstractGUI):
                if relativePosition >= 0 and relativePosition <= 38:
                
                   #138 pixels between every button
-                  buttonPressed = floor(((-self.scrolledContentY)+y)/138)
+                  self.buttonPressed = floor(((-self.scrolledContentY)+y)/138)
                   self.buyStockOpen = True
                   self.buyAmount = '' # reset this pop up gui
                
