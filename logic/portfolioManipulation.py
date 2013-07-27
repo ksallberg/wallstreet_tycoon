@@ -64,17 +64,25 @@ def sellStock(investor,company,amount):
    # it from the list of owned stocks
    portEntry = Portfolio.objects.get(investor=investor,company=company)
    
+   tempPortEntry = 0
+   
    if(portEntry.amount - amount < 0):
       print 'PORTFOLIOMANIPULATION: SELL STOCK: ERROR: SELLING MORE THAN OWNED!'
    else:
+      tempPortEntry = portEntry.amount
       portEntry.amount = portEntry.amount - amount
       portEntry.save()
    
-   # to speed up getCurrentPortfolio
-   portEntry.amount == 0
-   portEntry.delete()
-   
-   investor.cash += stockHandle.price * amount
+   # to speed up getCurrentPortfolio, make the bots sell everything they own of this stock!
+   # TODO: It would be nice if they could sell random amounts but maybe it will
+   # make everything too slow?
+   if investor.type != 'player':
+      portEntry.amount = 0
+      investor.cash += stockHandle.price * tempPortEntry
+      portEntry.delete()
+   else:
+      investor.cash += stockHandle.price * amount
+      
    investor.save()
    
 def getCurrentPortfolio(investor):
