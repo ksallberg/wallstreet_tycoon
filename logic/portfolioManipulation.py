@@ -81,6 +81,8 @@ def sellStock(investor,company,amount):
       investor.cash += stockHandle.price * tempPortEntry
       portEntry.delete()
    else:
+      if portEntry.amount == 0:
+         portEntry.delete()
       investor.cash += stockHandle.price * amount
       
    investor.save()
