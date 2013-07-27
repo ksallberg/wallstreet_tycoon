@@ -32,6 +32,8 @@ class MarketGUI(AbstractGUI):
    buyAmount           = ''
    buttonPressed       = 0
    
+   cacheList           = None #used to optimize drawing of texts
+   
    def __init__(self):
       
       self.scrollbar.x = 669
@@ -131,22 +133,22 @@ class MarketGUI(AbstractGUI):
             font  = pygame.font.SysFont('monospace',16)
             label = font.render(company.name, 1, (255,255,255))
             s.blit(label,(0,i*self.guiRowDist))
-         
+            
             font  = pygame.font.SysFont('monospace',16)
             label = font.render('cash:'+str(company.cash), 1, (255,255,255))
             s.blit(label,(0,(i+1)*self.guiRowDist))
-         
+            
             font  = pygame.font.SysFont('monospace',16)
             label = font.render('ticker:'+company.ticker, 1, (255,255,255))
             s.blit(label,(0,(i+2)*self.guiRowDist))
-         
+            
             font  = pygame.font.SysFont('monospace',16)
             label = font.render('number of shares:'+str(company.shares), 1, (255,255,255))
             s.blit(label,(0,(i+3)*self.guiRowDist))
-         
+            
             lastTime = company.priceHistory.all().aggregate(Max('time'))
             currentPrice = company.priceHistory.get(time=lastTime['time__max'])
-         
+            
             font  = pygame.font.SysFont('monospace',16)
             label = font.render('price:'+str(currentPrice), 1, (255,255,255))
             s.blit(label,(0,(i+4)*self.guiRowDist))
@@ -172,12 +174,21 @@ class MarketGUI(AbstractGUI):
       
 class PortfolioGUI(AbstractGUI):
    
-   width     = 326
-   height    = 517
-   x         = 375
-   y         = 28
-   sheet     = pygame.image.load(os.path.join('resources','portfolioGUI.png'))
-   scrollbar = ScrollBar()
+   width               = 326
+   height              = 517
+   x                   = 375
+   y                   = 28
+   sheet               = pygame.image.load(os.path.join('resources','portfolioGUI.png'))
+   sellButtonSheet     = pygame.image.load(os.path.join('resources','sellButton.png'))
+   sellButtonImage     = None
+   
+   scrollbar           = ScrollBar()
+   scrolledContentYTop = 119
+   scrolledContentY    = 0
+   
+   guiRowDist          = 23
+   
+   cacheList           = None #used to optimize drawing of texts
    
    def __init__(self):
       
@@ -190,6 +201,13 @@ class PortfolioGUI(AbstractGUI):
                                  self.width,
                                  self.height
                                 )
+                                
+      self.sellButtonImage = loadImageSize(self.sellButtonSheet,
+                                           0,
+                                           0,
+                                           127,
+                                           42
+                                          )
       
       closeBtn        = Button()
       closeBtn.x      = 379
@@ -199,11 +217,46 @@ class PortfolioGUI(AbstractGUI):
       closeBtn.label  = 'closeGUI'
       self.buttons.append(closeBtn)
       
+      player = Investor.objects.get(type='player')
+      
+      stocks = Portfolio.objects.filter(investor=player)
+      
+      self.cacheList = pygame.Surface((500,((len(stocks)*(self.guiRowDist*3)))), pygame.SRCALPHA, 32)
+      self.cacheList = self.cacheList.convert_alpha()
+      
    def readEvent(self,event):
       self.scrollbar.readEvent(event)
       
    def drawExtra(self,screen):
+      
       self.scrollbar.blit(screen)
+      
+      player = Investor.objects.get(type='player')
+      
+      stocks = Portfolio.objects.filter(investor=player)
+      self.scrolledContentY = self.scrolledContentYTop - ((len(stocks)*(self.guiRowDist*3))) * self.scrollbar.percentage + 336 * self.scrollbar.percentage
+      
+      s = pygame.Surface((500,len(stocks)*self.guiRowDist*4), pygame.SRCALPHA, 32)
+      s = s.convert_alpha()
+      
+      i = 0
+      for stock in stocks:
+         font  = pygame.font.SysFont('monospace',16)
+         label = font.render(stock.company.name, 1, (255,255,255))
+         s.blit(label,(0,i*self.guiRowDist))
+         
+         font  = pygame.font.SysFont('monospace',16)
+         label = font.render(str(stock.amount), 1, (255,255,255))
+         s.blit(label,(343,i*self.guiRowDist))
+         
+         s.blit(self.sellButtonImage,(0,((i+1))*self.guiRowDist))
+         
+         i += 3
+         
+      self.cacheList.fill(0)
+      self.cacheList.blit(s,(0,0))
+      
+      screen.blit(self.cacheList, (227,self.scrolledContentYTop),Rect(0,self.scrolledContentYTop-self.scrolledContentY,415,336))
       
 class OpponentsGUI(AbstractGUI):
    
