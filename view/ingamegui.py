@@ -147,10 +147,10 @@ class MarketGUI(AbstractGUI):
             s.blit(label,(0,(i+3)*self.guiRowDist))
             
             lastTime = company.priceHistory.all().aggregate(Max('time'))
-            currentPrice = company.priceHistory.get(time=lastTime['time__max'])
+            currentStock = company.priceHistory.get(time=lastTime['time__max'])
             
             font  = pygame.font.SysFont('monospace',16)
-            label = font.render('price:'+str(currentPrice), 1, (255,255,255))
+            label = font.render('price:'+str(currentStock.price), 1, (255,255,255))
             s.blit(label,(0,(i+4)*self.guiRowDist))
             i += 6
          
