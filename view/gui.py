@@ -1,6 +1,7 @@
 import os
 import pygame
 import math
+from math                       import ceil
 from pygame                     import *
 from utils.loading              import loadImageSize
 from view.scrollbar             import ScrollBar
@@ -152,6 +153,8 @@ class CharacterLoading(AbstractGUI):
    
    selectorImage     = None
    
+   index             = 0
+   
    def __init__(self):
       AbstractGUI.__init__(self)
       
@@ -244,20 +247,41 @@ class CharacterLoading(AbstractGUI):
       
    def injectLoadData(self,data):
       self.saveFiles = data
+      self.setSelector('loading1') #the first
       
    def drawExtras(self,screen,input):
-      for i in range(0,len(self.saveFiles)):
+      spaceCounter = 0 # just to simplify placing texts on the screen
+      endLoopAt = self.index * 5 + 5 # end the loop at index + 5
+                                   # which draws max 5 files
+      if endLoopAt > len(self.saveFiles):
+         endLoopAt = len(self.saveFiles)
+      for i in range(self.index*5,endLoopAt):
          font  = pygame.font.SysFont('monospace',20)
          label = font.render(self.saveFiles[i], 1, (78,49,11))
-         screen.blit(label,(262,130+i*70))
+         screen.blit(label,(262,130+spaceCounter*70))
+         spaceCounter += 1
          
       if self.currentSelected != None:
          screen.blit(self.selectorImage, (688, 128 + self.currentSelected*71))
    
+   # checks that it's safe to select the wanted button as
+   # the current selected load file
    def setSelector(self,number):
-      self.currentSelected = int(number[7])-1 #take the number from the name and subtract 1 to make it an index
-      self.wantedSaveName  = self.saveFiles[self.currentSelected]
-      print self.currentSelected
+      if len(self.saveFiles) > (int(number[7])-1) + self.index * 5:
+         self.currentSelected = int(number[7])-1 #take the number from the name and subtract 1 to make it an index
+         self.wantedSaveName  = self.saveFiles[self.currentSelected + self.index * 5]
+   
+   # index is to determine which files to draw if more then
+   # five save files exist...
+   def incIndex(self):
+      if self.index < (len(self.saveFiles)-1) / 5:
+         self.index += 1
+         self.setSelector('loading1') # a little hack to make the selector go to the top
+   
+   def decIndex(self):
+      if self.index > 0:
+         self.index -= 1
+         self.setSelector('loading1')
    
 class CharacterCreation(AbstractGUI):
    
@@ -418,7 +442,7 @@ class CharacterCreation(AbstractGUI):
          self.selectorPos = (495,425)
       elif character == self.char8Name:
          self.selectorPos = (591,425)
-   
+         
 class MainMenu(AbstractGUI):
    
    maxHeight = 208
@@ -489,4 +513,4 @@ class MainMenu(AbstractGUI):
                                  self.width,
                                  self.height
                                 )
-      self.isOpen = False  
+      self.isOpen = False

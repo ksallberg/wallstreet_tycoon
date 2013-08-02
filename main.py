@@ -15,7 +15,7 @@ import copy
 from pygame                     import *
 from view.map                   import *
 from logic.chance               import applyChance
-from view.gui                   import StartScreen, StartMainMenu, CharacterLoading, CharacterCreation, MainMenu
+from view.gui                   import *
 
 import random
 from utils.loading              import loadImage, loadImageSize
@@ -134,6 +134,11 @@ class Main():
                   self.currentMap.injectCharacters(Investor.objects.all())
                   self.currentState = self.STATE_GAME_MODE
                   self.currentGUI = None
+                  
+               elif btn.label == 'backBtn':
+                  self.currentGUI.decIndex()
+               elif btn.label == 'forwBtn':
+                  self.currentGUI.incIndex()
                      
          elif event.type == QUIT:
             self.exit()
