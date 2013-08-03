@@ -271,8 +271,31 @@ class Main():
                             chpos[0],
                             chpos[1]
                            )
-            self.screen.blit(img, (ch.x-self.camera[0]-16, ch.y-33-self.camera[1]))
-      
+            charPos = (ch.x-self.camera[0]-16, ch.y-33-self.camera[1])
+            self.screen.blit(img,charPos)
+            
+            # draw the nametag background
+            self.screen.blit(ch.nametagImage,(charPos[0]-32,charPos[1]-46))
+            
+            # draw the texts describing name and capital
+            font  = pygame.font.SysFont('monospace',10)
+            (nameLabelW,nameLabelH) = font.size(ch.name)
+            nameLabel = font.render(ch.name, 1, (34,34,34))
+            self.screen.blit(nameLabel,(charPos[0]-32+(97/2)-(nameLabelW/2),charPos[1]-43))
+            
+            # get the current cash amount of the investor
+            from gamemodels.models import Investor
+            from logic.portfolioManipulation import calcCurrentPortfolioWorth
+            
+            inv = Investor.objects.get(name=ch.name)
+            
+            investorStock = calcCurrentPortfolioWorth(inv)
+            totalCapital  = investorStock + inv.cash
+            
+            cashLabel = font.render('$'+str(totalCapital), 1, (211,211,211))
+            (cashLabelW,cashLabelH) = font.size('$'+str(totalCapital))
+            self.screen.blit(cashLabel,(charPos[0]-32+(97/2)-(cashLabelW/2),charPos[1]-23))
+            
             # walk somewhere?
             if ch != self.currentMap.mainChar:
                if applyChance(5):

@@ -1,66 +1,78 @@
 import os
+import pygame
+from utils.loading              import loadImage, loadImageSize
 
 class Character:
    
-   DIR_SOUTH = "south"
-   DIR_NORTH = "north"
-   DIR_WEST  = "west"
-   DIR_EAST  = "east"
+   DIR_SOUTH         = "south"
+   DIR_NORTH         = "north"
+   DIR_WEST          = "west"
+   DIR_EAST          = "east"
    
-   STATE_STANDING  = "standing"
-   STATE_WALKING   = "walking"
+   STATE_STANDING    = "standing"
+   STATE_WALKING     = "walking"
    
-   charWidth  = 32
-   charHeight = 48
+   charWidth         = 32
+   charHeight        = 48
    
-   movingPositions = []
+   movingPositions   = []
    
-   startpoint  = (0,0)
-   endpoint    = (0,0)
-   pathlines   = []
+   startpoint        = (0,0)
+   endpoint          = (0,0)
+   pathlines         = []
    
    # These describe where each 
    # character's different sprites
    # are located.
-   south1 = (0,           0)
-   south2 = (1*charWidth, 0)
-   south3 = (2*charWidth, 0)
+   south1            = (0,           0)
+   south2            = (1*charWidth, 0)
+   south3            = (2*charWidth, 0)
    
-   west1  = (0,           1*charHeight)
-   west2  = (1*charWidth, 1*charHeight)
-   west3  = (2*charWidth, 1*charHeight)
+   west1             = (0,           1*charHeight)
+   west2             = (1*charWidth, 1*charHeight)
+   west3             = (2*charWidth, 1*charHeight)
    
-   east1  = (0,           2*charHeight)
-   east2  = (1*charWidth, 2*charHeight)
-   east3  = (2*charWidth, 2*charHeight)
+   east1             = (0,           2*charHeight)
+   east2             = (1*charWidth, 2*charHeight)
+   east3             = (2*charWidth, 2*charHeight)
    
-   north1 = (0,           3*charHeight)
-   north2 = (1*charWidth, 3*charHeight)
-   north3 = (2*charWidth, 3*charHeight)
+   north1            = (0,           3*charHeight)
+   north2            = (1*charWidth, 3*charHeight)
+   north3            = (2*charWidth, 3*charHeight)
    
    # distance to
-   type1  = (0,0)
-   type2  = (charWidth*3,0)
-   type3  = (charWidth*6,0)
-   type4  = (charWidth*9,0)
+   type1             = (0,0)
+   type2             = (charWidth*3,0)
+   type3             = (charWidth*6,0)
+   type4             = (charWidth*9,0)
    
-   type5  = (0,charHeight*4)
-   type6  = (charWidth*3,charHeight*4)
-   type7  = (charWidth*6,charHeight*4)
-   type8  = (charWidth*9,charHeight*4)
+   type5             = (0,charHeight*4)
+   type6             = (charWidth*3,charHeight*4)
+   type7             = (charWidth*6,charHeight*4)
+   type8             = (charWidth*9,charHeight*4)
    
-   type = None
+   type              = None
+   name              = 'no_name'
    
-   state = STATE_STANDING
-   direction = DIR_SOUTH
-   x = 0
-   y = 0
-   picture = os.path.join('resources','characters.png')
-   animState = 0
-   curAnim = None
+   state             = STATE_STANDING
+   direction         = DIR_SOUTH
+   x                 = 0
+   y                 = 0
+   picture           = os.path.join('resources','characters.png')
+   animState         = 0
+   curAnim           = None
+   
+   nametagSheet      = pygame.image.load(os.path.join('resources','nametag.png'))
+   nametagImage      = None
    
    def __init__(self):
       self.movingPositions = []
+      self.nametagImage = loadImageSize(self.nametagSheet,
+                                 0,
+                                 0,
+                                 97,
+                                 43
+                                )
    
    def setMovingPositions(this,mp):
       this.movingPositions = mp
@@ -163,3 +175,6 @@ class Character:
    
    def setType(this,type):
       this.type = type
+      
+   def setName(this,name):
+      this.name = name

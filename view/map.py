@@ -104,22 +104,21 @@ class TownMap(AbstractMap):
       
       #print investors
       for investor in investors:
-         if investor.type == 'bot':
-            char = Character()
-            spawnPos = choice(self.spawnPositions) #random spawnign position
-            char.x = spawnPos[0]
-            char.y = spawnPos[1]
-            char.setType(self.mapPlayerToSprite(investor.sprite))
-            self.characters.append(char)
-         elif investor.type == 'player':
-            char = Character()
+         
+         # create character for the map
+         char = Character()
+         spawnPos = choice(self.spawnPositions) #random spawnign position
+         char.x = spawnPos[0]
+         char.y = spawnPos[1]
+         char.setType(self.mapPlayerToSprite(investor.sprite))
+         char.setName(investor.name)
+         
+         if investor.type == 'player':
             char.x = self.mainSpawnPos[0]
             char.y = self.mainSpawnPos[1]
-            char.setType(self.mapPlayerToSprite(investor.sprite))
-            self.characters.append(char)
             self.mainChar = char
-         else:
-            print 'town map! wrong player type!'
+            
+         self.characters.append(char)
       
 class HouseMap(AbstractMap):
    
@@ -154,5 +153,6 @@ class HouseMap(AbstractMap):
          char.y = 17*32+16
          char.startpoint = (3,10)
          char.setType(self.mapPlayerToSprite(investor.sprite))
+         char.setName(investor.name)
          self.characters.append(char)
          self.mainChar = char
