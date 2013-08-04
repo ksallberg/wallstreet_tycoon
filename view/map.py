@@ -120,6 +120,20 @@ class TownMap(AbstractMap):
             
          self.characters.append(char)
       
+      # when creating the map, insert all the current total capital
+      # to the characters, this is needed before the model thread
+      # gets access to the characters
+      for ch in self.characters:
+         
+         from gamemodels.models           import Investor
+         from logic.portfolioManipulation import calcCurrentPortfolioWorth
+         
+         inv           = Investor.objects.get(name=ch.name)
+         investorStock = calcCurrentPortfolioWorth(inv)
+         totalCapital  = investorStock + inv.cash
+      
+         ch.setTempTotalCapital(totalCapital)
+      
 class HouseMap(AbstractMap):
    
    def __init__(self):
@@ -148,11 +162,23 @@ class HouseMap(AbstractMap):
                self.aStarMap.append(-1)
                
    def injectMainCharacter(self,investor):
-         char = Character()
-         char.x = 13*32+16
-         char.y = 17*32+16
-         char.startpoint = (3,10)
-         char.setType(self.mapPlayerToSprite(investor.sprite))
-         char.setName(investor.name)
-         self.characters.append(char)
-         self.mainChar = char
+      char = Character()
+      char.x = 13*32+16
+      char.y = 17*32+16
+      char.startpoint = (3,10)
+      char.setType(self.mapPlayerToSprite(investor.sprite))
+      char.setName(investor.name)
+      self.characters.append(char)
+      self.mainChar = char
+      
+      # when creating the map, insert the current total
+      # capital to the character this is needed before 
+      # the model thread gets access to the characters
+      from gamemodels.models           import Investor
+      from logic.portfolioManipulation import calcCurrentPortfolioWorth
+         
+      inv           = Investor.objects.get(name=char.name)
+      investorStock = calcCurrentPortfolioWorth(inv)
+      totalCapital  = investorStock + inv.cash
+      
+      char.setTempTotalCapital(totalCapital)

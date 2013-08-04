@@ -50,18 +50,13 @@ class Main():
    def __init__(self):
       
       self.currentGUI = StartMainMenu()
-      
       pygame.init()
-      self.screen = pygame.display.set_mode((self.widthInTiles*32, self.heightInTiles*32))
-      
       pygame.display.set_caption('Wallstreet Tycoon')
-      self.clock = pygame.time.Clock()
-
-      self.charSheet = pygame.image.load(os.path.join('resources','characters.png'))
-
-      self.renderer = tiledtmxloader.helperspygame.RendererPygame()
-
-      self.camera = [0,0]
+      self.screen     = pygame.display.set_mode((self.widthInTiles*32, self.heightInTiles*32))
+      self.clock      = pygame.time.Clock()
+      self.charSheet  = pygame.image.load(os.path.join('resources','characters.png'))
+      self.renderer   = tiledtmxloader.helperspygame.RendererPygame()
+      self.camera     = [0,0]
       self.renderer.set_camera_position_and_size(self.camera[0],self.camera[1],self.widthInTiles*32,self.heightInTiles*32,'topleft')
    
    def exit(self):
@@ -73,17 +68,11 @@ class Main():
    def renderStartScreen(self):
       self.screen.fill((0,0,0))
       
-      # draw background for the frame
-      #s = pygame.Surface((560,560))
-      #s.fill((34, 16, 94))
-      #self.screen.blit(s, (190,30))
-      
       (mouseX,mouseY) = pygame.mouse.get_pos()
       (xdiff,ydiff) = (mouseX%32,mouseY%32)
       
       # Draw the main menu
       self.screen.blit(self.startScreen.image, (167, 8))
-      
       self.screen.blit(self.currentGUI.image, (self.currentGUI.x, self.currentGUI.y))
       
       if self.currentState == self.STATE_CHARACTER_CREATION:
@@ -98,7 +87,6 @@ class Main():
             
             # some sort of event handling for the start screen
             if btn != None:
-               
                if btn.label == 'createChar':
                   self.currentGUI   = CharacterCreation()
                   self.currentState = self.STATE_CHARACTER_CREATION
@@ -120,17 +108,17 @@ class Main():
 
                      from control.scheduledEvents    import modelInit
                      from gamemodels.models          import Investor
-                     self.repeatedTimer = modelInit(None)
+                     self.repeatedTimer = modelInit(None,self)
                      self.currentMap.injectCharacters(Investor.objects.all())
-                     self.currentState = self.STATE_GAME_MODE
-                     self.currentGUI = None
+                     self.currentState  = self.STATE_GAME_MODE
+                     self.currentGUI    = None
                      
                elif btn.label == 'saveChar':
                   
                   createNewFile() #new name
                   from control.scheduledEvents    import modelInit
                   from gamemodels.models          import Investor
-                  self.repeatedTimer = modelInit((self.currentGUI.name,self.currentGUI.character))
+                  self.repeatedTimer = modelInit((self.currentGUI.name,self.currentGUI.character),self)
                   self.currentMap.injectCharacters(Investor.objects.all())
                   self.currentState = self.STATE_GAME_MODE
                   self.currentGUI = None
@@ -255,18 +243,18 @@ class Main():
          s.set_alpha(80)
          s.fill(mouseColor)
          self.screen.blit(s, (mouseX-xdiff,mouseY-ydiff))
-
+      
       # draw characters
       for ch in self.currentMap.characters:
       
          chpos = ch.getOffset()
-      
+         
          #character clipping!
          if (ch.x >= self.camera[0] - self.charClippingOffset and
              ch.x <= self.camera[0] + self.widthInTiles  * 32 + self.charClippingOffset and
              ch.y >= self.camera[1] - self.charClippingOffset and
              ch.y <= self.camera[1] + self.heightInTiles * 32 + self.charClippingOffset):
-          
+            
             img = loadImage(self.charSheet,
                             chpos[0],
                             chpos[1]
@@ -283,18 +271,13 @@ class Main():
             nameLabel = font.render(ch.name, 1, (34,34,34))
             self.screen.blit(nameLabel,(charPos[0]-32+(97/2)-(nameLabelW/2),charPos[1]-43))
             
-            # get the current cash amount of the investor
-            from gamemodels.models import Investor
-            from logic.portfolioManipulation import calcCurrentPortfolioWorth
             
-            inv = Investor.objects.get(name=ch.name)
             
-            investorStock = calcCurrentPortfolioWorth(inv)
-            totalCapital  = investorStock + inv.cash
-            
-            cashLabel = font.render('$'+str(totalCapital), 1, (211,211,211))
-            (cashLabelW,cashLabelH) = font.size('$'+str(totalCapital))
+            cashLabel = font.render('$'+str(ch.tempTotalCapital), 1, (211,211,211))
+            (cashLabelW,cashLabelH) = font.size('$'+str(ch.tempTotalCapital))
             self.screen.blit(cashLabel,(charPos[0]-32+(97/2)-(cashLabelW/2),charPos[1]-23))
+            
+            #print ch.tempTotalCapital
             
             # walk somewhere?
             if ch != self.currentMap.mainChar:
@@ -333,14 +316,10 @@ class Main():
       # Draw the main menu
       self.screen.blit(self.mainMenu.image, (10, 10))
       
-      
-      
       if self.currentGUI != None:
       # Draw the main menu
          self.screen.blit(self.startScreen.image, (167, 8))
-      
          self.screen.blit(self.currentGUI.image, (self.currentGUI.x, self.currentGUI.y))
-      
          self.currentGUI.drawExtra(self.screen)
          
    def mainLoop(self):

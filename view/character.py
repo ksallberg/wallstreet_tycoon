@@ -53,6 +53,7 @@ class Character:
    
    type              = None
    name              = 'no_name'
+   tempTotalCapital  = 0
    
    state             = STATE_STANDING
    direction         = DIR_SOUTH
@@ -178,3 +179,6 @@ class Character:
       
    def setName(this,name):
       this.name = name
+      
+   def setTempTotalCapital(this,tempTotalCapital):
+      this.tempTotalCapital = tempTotalCapital

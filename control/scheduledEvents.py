@@ -12,9 +12,9 @@ from utils.loading               import Loader
 from logic.generation            import *
 
 # start up the game
-def modelInit(playerInput):
+def modelInit(playerInput,mainRef):
    if connection.introspection.table_names() == [] and playerInput != None:
-      print 'save file DOES NOT exist'
+      print 'save file does NOT exist'
       
       call(["python", "manage.py", "syncdb"])
       
@@ -35,14 +35,14 @@ def modelInit(playerInput):
    
       generateNewRound(companyNames,investorNames,playerInput)
       
-   rt = RepeatedTimer(20,handleHour) # 10 game seconds is one hour
-   handleHour()
+   rt = RepeatedTimer(20,handleHour,mainRef) # 10 game seconds is one hour
+   handleHour(mainRef)
    return rt
 
 # Every hour of the stock, this function
 # handles calculating new prices for each of
 # the companies in the stock market.
-def handleHour():
+def handleHour(mainRef):
    
    comps = Company.objects.all()
 
@@ -97,11 +97,18 @@ def handleHour():
                # then delegate the object modification
                # to sellStock
                sellStock(investor,comp,entry[1])
-               
-      # finally, just to debug, print the person and his/her current cash:
-      #print (investor.name + ", \t\tcash: " + str(investor.cash) + ", \t\tin stock: " + str(calcCurrentPortfolioWorth(investor))
-      #                     + ", \t\ttotal: " + str(investor.cash+calcCurrentPortfolioWorth(investor)))
    
+   # get the current cash amount of the investor
+   if mainRef.currentMap.characters != None:
+      
+      for ch in mainRef.currentMap.characters:
+      
+         inv           = Investor.objects.get(name=ch.name)
+         investorStock = calcCurrentPortfolioWorth(inv)
+         totalCapital  = investorStock + inv.cash
+      
+         ch.setTempTotalCapital(totalCapital)
+
 def debugPrintCompany():
    
    comps = Company.objects.all()
