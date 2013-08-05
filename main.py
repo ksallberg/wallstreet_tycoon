@@ -16,7 +16,7 @@ from view.gui                   import *
 from utils.AStar                import findPath, AStar
 from utils.loading              import loadImage, loadImageSize
 from control.savesLookup        import findExistingRounds, createSettingsFile, createNewFile
-from os.path import join
+from os.path                    import join
 
 class Main():
    
