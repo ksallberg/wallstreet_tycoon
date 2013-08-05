@@ -1,24 +1,22 @@
 import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'djangosettings'
-from os.path import join
 import control.savesLookup
-from control.savesLookup        import findExistingRounds, createSettingsFile, createNewFile
-import view.character
-from view.character             import Character
 import pygame
 import math
 import datetime
+import random
 import time
 import tiledtmxloader
-from utils.AStar                import findPath, AStar
 import copy
+import view.character
+from view.character             import Character
 from pygame                     import *
 from view.map                   import *
 from logic.chance               import applyChance
 from view.gui                   import *
-
-import random
+from utils.AStar                import findPath, AStar
 from utils.loading              import loadImage, loadImageSize
+from control.savesLookup        import findExistingRounds, createSettingsFile, createNewFile
+from os.path import join
 
 class Main():
    
@@ -49,6 +47,7 @@ class Main():
 
    def __init__(self):
       
+      os.environ['DJANGO_SETTINGS_MODULE'] = 'djangosettings'
       self.currentGUI = StartMainMenu()
       pygame.init()
       pygame.display.set_caption('Wallstreet Tycoon')
@@ -224,7 +223,7 @@ class Main():
       self.renderer.set_camera_position(self.camera[0],self.camera[1],'topleft')
 
       self.screen.fill((0, 0, 0))
-
+      
       for sprite_layer in self.currentMap.spriteLayers:
          if sprite_layer.is_object_group:
             continue
@@ -246,7 +245,7 @@ class Main():
       
       # draw characters
       for ch in self.currentMap.characters:
-      
+         
          chpos = ch.getOffset()
          
          #character clipping!
@@ -271,13 +270,9 @@ class Main():
             nameLabel = font.render(ch.name, 1, (34,34,34))
             self.screen.blit(nameLabel,(charPos[0]-32+(97/2)-(nameLabelW/2),charPos[1]-43))
             
-            
-            
             cashLabel = font.render('$'+str(ch.tempTotalCapital), 1, (211,211,211))
             (cashLabelW,cashLabelH) = font.size('$'+str(ch.tempTotalCapital))
             self.screen.blit(cashLabel,(charPos[0]-32+(97/2)-(cashLabelW/2),charPos[1]-23))
-            
-            #print ch.tempTotalCapital
             
             # walk somewhere?
             if ch != self.currentMap.mainChar:
@@ -297,7 +292,8 @@ class Main():
       if (self.currentMap.mainChar.x/32,self.currentMap.mainChar.y/32) in self.currentMap.teleportTiles:
    
          if self.currentMap.tag == 'town':
-            self.mainCharPosBackup = (self.currentMap.mainChar.x,self.currentMap.mainChar.y)
+            self.mainCharPosBackup = (self.currentMap.mainChar.x,self.currentMap.mainChar.y-(self.currentMap.mainChar.y%32)+32+16)
+            self.startpoint = self.mainCharPosBackup
             self.currentMap.destroy()
             self.currentMap = HouseMap()
             from gamemodels.models import Investor
@@ -308,7 +304,7 @@ class Main():
             from gamemodels.models import Investor
             self.currentMap.injectCharacters(Investor.objects.all())
             self.currentMap.mainChar.x = self.mainCharPosBackup[0]
-            self.currentMap.mainChar.y = self.mainCharPosBackup[1] + 32 + 16
+            self.currentMap.mainChar.y = self.mainCharPosBackup[1]
       
          self.screen.fill((0, 0, 0))
          pygame.time.delay(200)
