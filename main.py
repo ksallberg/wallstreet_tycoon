@@ -126,6 +126,8 @@ class Main():
                   self.currentGUI.decIndex()
                elif btn.label == 'forwBtn':
                   self.currentGUI.incIndex()
+               elif btn.label == 'instructions':
+                  self.currentGUI   = Instructions()
                      
          elif event.type == QUIT:
             self.exit()

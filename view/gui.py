@@ -137,6 +137,32 @@ class StartMainMenu(AbstractGUI):
       exit.height = 80
       exit.label  = 'exit'
       self.buttons.append(exit)
+      
+class Instructions(AbstractGUI):
+   
+   x         = 229
+   y         = 28
+   width     = 470
+   height    = 516
+   sheet     = pygame.image.load(os.path.join('resources','instructions.png'))
+   
+   def __init__(self):
+      AbstractGUI.__init__(self)
+      
+      self.image = loadImageSize(self.sheet,
+                                 0,
+                                 0,
+                                 self.width,
+                                 self.height
+                                )
+      
+      backBtn        = Button()
+      backBtn.x      = 353
+      backBtn.y      = 472
+      backBtn.width  = 228
+      backBtn.height = 80
+      backBtn.label  = 'backToMenu'
+      self.buttons.append(backBtn)
 
 class CharacterLoading(AbstractGUI):
    x                 = 222
