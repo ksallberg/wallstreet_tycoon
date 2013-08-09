@@ -7,6 +7,12 @@ from view.character import *
 import tiledtmxloader
 from random import choice
 
+# This file models all the maps. All maps are based on AbstractMap.
+# Right now there are just two maps. House and Town. It takes care of
+# checking which tiles are blocking and which are not for instance.
+
+# I'm using tiledtmxloader to load the tiled format maps to the screen.
+
 class AbstractMap():
    
    width             = 0

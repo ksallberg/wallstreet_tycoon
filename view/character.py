@@ -7,6 +7,9 @@ import os
 import pygame
 from utils.loading              import loadImage, loadImageSize
 
+# Class to model the graphical representation of a character.
+# Has states for standing and walking in all 4 directions.
+
 class Character:
    
    DIR_SOUTH         = "south"

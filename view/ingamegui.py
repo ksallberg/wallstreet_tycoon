@@ -3,6 +3,11 @@
 # Python version: 2.7.5
 # This code is my own work.
 
+# This does basically the same thing as gui.py but all these views
+# use Django in some way. Therefore they have to be separated from
+# the other code so Django isn't initialized before the new djangosettings.py
+# is generated and saved.
+
 from gamemodels.models           import Company, Stock, Investor
 from logic.portfolioManipulation import *
 from django.db.models            import Max

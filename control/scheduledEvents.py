@@ -3,6 +3,10 @@
 # Python version: 2.7.5
 # This code is my own work.
 
+# This file contains functions to generate a new game round.
+# Including creating opponents and companies.
+# And it also handles creating new prices for all companies.
+
 import os
 
 from logic.priceManipulation     import calcNewPrice

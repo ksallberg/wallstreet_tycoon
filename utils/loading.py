@@ -6,6 +6,8 @@
 import json
 from pygame                     import *
 
+# functions to cut sub surfaces from sheets
+
 def loadImage(sheet, indexX, indexY):
    rect = Rect((indexX,indexY, 32, 48))
    image = Surface(rect.size, SRCALPHA)

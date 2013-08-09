@@ -3,6 +3,10 @@
 # Python version: 2.7.5
 # This code is my own work.
 
+# This file contains functions for manipulating the 
+# Django configuration file. This is to be able to select
+# a specific save file (database) before Django is initiated.
+
 from os import listdir
 from os.path import isfile, join
 from time import gmtime, strftime

@@ -3,6 +3,21 @@
 # Python version: 2.7.5
 # This code is my own work.
 
+# This is the main class binding everything together.
+# 
+# Responsibilities:
+#
+# Event handling (including listening to GUI elements)
+# Model controlling
+# Map loading and renering
+# Character drawing
+# State controlling
+
+# NOTE!!! Django has to be separated from this code 
+# before the new djangosettings.py is generated and saved.
+# Otherwise Django will initialize and generate a new faulty
+# djangosettings.py file
+
 import os
 import control.savesLookup
 import pygame
@@ -20,7 +35,7 @@ from logic.chance               import applyChance
 from view.gui                   import *
 from utils.AStar                import findPath, AStar
 from utils.loading              import loadImage, loadImageSize
-from control.savesLookup        import findExistingRounds, createSettingsFile, createNewFile
+from control.savesLookup        import *
 from os.path                    import join
 
 class Main():

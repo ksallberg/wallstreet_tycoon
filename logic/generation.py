@@ -3,6 +3,9 @@
 # Python version: 2.7.5
 # This code is my own work.
 
+# this file has code to handle parsing of the JSON files and
+# combine data to create opponent names and company names etc
+
 import random
 from random import choice
 from gamemodels.models import *

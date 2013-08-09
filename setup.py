@@ -3,6 +3,8 @@
 # Python version: 2.7.5
 # This code is my own work.
 
+# Basic setup information for Django!
+
 import os
 from setuptools import setup
 

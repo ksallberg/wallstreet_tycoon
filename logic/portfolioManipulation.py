@@ -6,6 +6,10 @@
 from gamemodels.models       import *
 from django.db.models        import Max
 
+# here are some fundamental functions to perform trading,
+# including to sell and buy stock, based on a specific investor
+# and to collect the entire portfolio of investors
+
 # Logics for byuing a stock
 def buyStock(investor,company,amount):
 

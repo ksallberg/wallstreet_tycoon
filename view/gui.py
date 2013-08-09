@@ -11,6 +11,12 @@ from pygame                     import *
 from utils.loading              import loadImageSize
 from view.scrollbar             import ScrollBar
 
+# This file holds classes to represent GUI windows
+# They are all based on Button, and AbstractGUI.
+# This is to be able to draw the GUI elements easily.
+# Each AbstractGUI can hold any number of buttons that
+# are listening for presses within their bounding box.
+
 class Button():
    x      = 3
    y      = 0
@@ -29,7 +35,7 @@ class AbstractGUI(Button):
       self.buttons = []
    
    def drawExtras(self,screen,input):
-      print 'draw extras'
+      print 'draw extras, dont call this, its an abstract class function'
    
    def findPressed(self,x,y):
       
@@ -40,7 +46,7 @@ class AbstractGUI(Button):
       return None
       
    def readEvent(self,event):
-      print 'readEvent'
+      print 'readEvent, dont call this, its an abstract class function'
 
 class StartScreen(AbstractGUI):
    

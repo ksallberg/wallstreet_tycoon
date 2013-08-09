@@ -8,6 +8,9 @@ import pygame
 from pygame                     import *
 from utils.loading              import loadImage, loadImageSize
 
+# A scroll bar implementation. There's only a 
+# dragger and no arrow/direction buttons that can be pressed
+
 class ScrollBar:
    
    sheet         = pygame.image.load(os.path.join('resources','scrollDragger.png'))
