@@ -16,3 +16,6 @@ install_requires = ['Django >= 1.5.1',
                     'tiledtmxloader >= 3.0.3',
                     'pygame>=1.9.1',
                    ]
+                   
+Link to github:
+https://github.com/ksallberg/wallstreet_tycoon
