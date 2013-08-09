@@ -1,4 +1,5 @@
-# stole this code from http://stackoverflow.com/a/13151299
+# THIS IS NOT MY WORK!
+# borrowed this code from http://stackoverflow.com/a/13151299
 
 from threading import Timer
 
