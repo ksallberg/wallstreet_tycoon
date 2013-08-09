@@ -1,3 +1,8 @@
+# Author: Kristian Sallberg - kristian(at)purestyle(punkt)se
+# Platform: OSX 10.7.5
+# Python version: 2.7.5
+# This code is my own work.
+
 from os import listdir
 from os.path import isfile, join
 from time import gmtime, strftime
@@ -31,6 +36,3 @@ def findExistingRounds():
 def createNewFile():
    currTime = join('saves',strftime("%Y-%m-%d-%H-%M-%S", gmtime())+'.save')
    createSettingsFile(currTime)
-   
-# first thing to do
-# createNewFile()

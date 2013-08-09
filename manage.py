@@ -1,3 +1,6 @@
+# THIS IS NOT MY WORK!
+# This is taken from django
+
 #!/usr/bin/env python
 import os
 import sys

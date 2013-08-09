@@ -1,3 +1,8 @@
+# Author: Kristian Sallberg - kristian(at)purestyle(punkt)se
+# Platform: OSX 10.7.5
+# Python version: 2.7.5
+# This code is my own work.
+
 import os
 
 from logic.priceManipulation     import calcNewPrice
@@ -108,29 +113,3 @@ def handleHour(mainRef):
          totalCapital  = investorStock + inv.cash
       
          ch.setTempTotalCapital(totalCapital)
-
-def debugPrintCompany():
-   
-   comps = Company.objects.all()
-
-   # For each company, find the latest price and
-   # calculate a new one
-   for comp in comps:
-      
-      print 'company: ' + comp.name
-      
-      priceHist = comp.priceHistory.all()
-      
-      for stock in priceHist:
-         
-         print '  :::' + str(stock.price)
-      
-   print 'new prices calculated'
-   
-def debugPrintInvestors():
-   
-   investors = Investor.objects.all()
-   
-   for investor in investors:
-      
-      print 'investor: ' + investor.name

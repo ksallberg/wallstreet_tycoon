@@ -1,3 +1,8 @@
+# Author: Kristian Sallberg - kristian(at)purestyle(punkt)se
+# Platform: OSX 10.7.5
+# Python version: 2.7.5
+# This code is my own work.
+
 import os
 import pygame
 from utils.loading              import loadImage, loadImageSize

@@ -1,3 +1,8 @@
+# Author: Kristian Sallberg - kristian(at)purestyle(punkt)se
+# Platform: OSX 10.7.5
+# Python version: 2.7.5
+# This code is my own work.
+
 import os
 import pygame
 import math
@@ -5,7 +10,6 @@ from math                       import ceil
 from pygame                     import *
 from utils.loading              import loadImageSize
 from view.scrollbar             import ScrollBar
-
 
 class Button():
    x      = 3
